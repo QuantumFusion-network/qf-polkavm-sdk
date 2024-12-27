@@ -1,0 +1,122 @@
+@font-face {
+	font-family: 'Inconsolata';
+	src:
+		local('Inconsolata Bold'),
+		local('Inconsolata-Bold'),
+		url('./Inconsolata/inconsolata-latin-700-normal.woff2') format('woff2'),
+		url('./Inconsolata/inconsolata-latin-700-normal.woff') format('woff'),
+		url('./Inconsolata/inconsolata-latin-700-normal.ttf') format('truetype');
+	font-weight: bold;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Inconsolata';
+	src:
+		local('Inconsolata SemiBold'),
+		local('Inconsolata-SemiBold'),
+		url('./Inconsolata/inconsolata-latin-600-normal.woff2') format('woff2'),
+		url('./Inconsolata/inconsolata-latin-600-normal.woff') format('woff'),
+		url('./Inconsolata/inconsolata-latin-600-normal.ttf') format('truetype');
+	font-weight: 600;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Inconsolata';
+	src:
+		local('Inconsolata Medium'),
+		local('Inconsolata-Medium'),
+		url('./Inconsolata/inconsolata-latin-500-normal.woff2') format('woff2'),
+		url('./Inconsolata/inconsolata-latin-500-normal.woff') format('woff'),
+		url('./Inconsolata/inconsolata-latin-500-normal.ttf') format('truetype');
+	font-weight: 500;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Inconsolata';
+	src:
+		local('Inconsolata Regular'),
+		local('Inconsolata-Regular'),
+		url('./Inconsolata/inconsolata-latin-400-normal.woff2') format('woff2'),
+		url('./Inconsolata/inconsolata-latin-400-normal.woff') format('woff'),
+		url('./Inconsolata/inconsolata-latin-400-normal.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Inconsolata';
+	src:
+		local('Inconsolata Light'),
+		local('Inconsolata-Light'),
+		url('./Inconsolata/inconsolata-latin-300-normal.woff2') format('woff2'),
+		url('./Inconsolata/inconsolata-latin-300-normal.woff') format('woff'),
+		url('./Inconsolata/inconsolata-latin-300-normal.ttf') format('truetype');
+	font-weight: 300;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Inconsolata';
+	src:
+		local('Inconsolata ExtraLight'),
+		local('Inconsolata-ExtraLight'),
+		url('./Inconsolata/inconsolata-latin-200-normal.woff2') format('woff2'),
+		url('./Inconsolata/inconsolata-latin-200-normal.woff') format('woff'),
+		url('./Inconsolata/inconsolata-latin-200-normal.ttf') format('truetype');
+	font-weight: 200;
+	font-style: normal;
+}
+
+
+@font-face {
+	font-family: 'Karla';
+	src:
+		local('Karla Bold'),
+		local('Karla-Bold'),
+		url('./Karla/karla-latin-700-normal.woff2') format('woff2'),
+		url('./Karla/karla-latin-700-normal.woff') format('woff'),
+		url('./Karla/karla-latin-700-normal.ttf') format('truetype');
+	font-weight: bold;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Karla';
+	src:
+		local('Karla SemiBold'),
+		local('Karla-SemiBold'),
+		url('./Karla/karla-latin-600-normal.woff2') format('woff2'),
+		url('./Karla/karla-latin-600-normal.woff') format('woff'),
+		url('./Karla/karla-latin-600-normal.ttf') format('truetype');
+	font-weight: 600;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Karla';
+	src:
+		local('Karla Regular'),
+		local('Karla-Regular'),
+		url('./Karla/karla-latin-400-normal.woff2') format('woff2'),
+		url('./Karla/karla-latin-400-normal.woff') format('woff'),
+		url('./Karla/karla-latin-400-normal.ttf') format('truetype');
+	font-weight: 400;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Karla';
+	src:
+		local('Karla ExtraLight'),
+		local('Karla-ExtraLight'),
+		url('./Karla/karla-latin-200-normal.woff2') format('woff2'),
+		url('./Karla/karla-latin-200-normal.woff') format('woff'),
+		url('./Karla/karla-latin-200-normal.ttf') format('truetype');
+	font-weight: 200;
+	font-style: normal;
+}
+
+

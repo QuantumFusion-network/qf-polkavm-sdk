@@ -1,0 +1,20 @@
+@import './assets/fonts/fonts.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+body {
+	font-family: 'Inconsolata';
+	font-weight: 300;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-family: 'Karla';
+	font-weight: 600;
+}
+
+p {
+	line-height: 1.27 !important;
+}
