@@ -4,11 +4,11 @@ import { ApiPromise, WsProvider } from '@polkadot/api';
 import { web3FromSource } from '@polkadot/extension-dapp';
 
 const FAUCET_AMOUNT = '1000000000000';
-const RPC_URL = 'ws://127.0.0.1:9944';
+const RPC_URL = 'wss://dev.qfnetwork.xyz/';
 
 const Step = ({ number, title, children, isOpen, toggle }) => (
   <div className="border rounded-xl px-5 py-4 bg-white">
-    <button 
+    <button
       onClick={toggle}
       className="w-full flex items-center justify-between font-medium text-lg"
     >
@@ -22,7 +22,7 @@ const Step = ({ number, title, children, isOpen, toggle }) => (
         <ChevronDown className="w-5 h-5" />
       </div>
     </button>
-    <div 
+    <div
       className={`grid transition-all duration-300 ease-in-out ${
         isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
       }`}
