@@ -1,10 +1,16 @@
+//
+//
+//
+
 import React, { useState, useEffect } from 'react';
 import { Wallet, Copy, ExternalLink, ChevronDown, ChevronUp, AlertCircle } from 'lucide-react';
 import { ApiPromise, WsProvider } from '@polkadot/api';
-import { web3FromSource } from '@polkadot/extension-dapp';
+import { web3FromSource, web3Enable, web3FromAddress } from '@polkadot/extension-dapp';
+import { Keyring } from '@polkadot/keyring';
 
-const FAUCET_AMOUNT = '1000000000000';
-const RPC_URL = 'wss://dev.qfnetwork.xyz/';
+
+const FAUCET_AMOUNT = '2000000000000';
+const RPC_URL = 'wss://dev.qfnetwork.xyz/socket';
 
 const Step = ({ number, title, children, isOpen, toggle }) => (
   <div className="border rounded-xl px-5 py-4 bg-white">
@@ -198,17 +204,28 @@ const FaucetStep = () => {
       try {
         setLoading(true);
         setStatus('Requesting tokens...');
-  
+
+        console.log("web3FromSource()", account);
+
+        const allInjected = await web3Enable('QFN/faucet');
+
         // Get the extension injector
-        const injector = await web3FromSource(account.meta.source);
-  
+        const injector = await web3FromAddress(account.address);
+
         // Make the actual faucet request
-        const transfer = api.tx.faucet.requestTokens();
-  
+        const MNEMONIC = 'poet heart pole ring honey renew night impact edge biology regret during';
+        const keyring = new Keyring({ type: 'sr25519', ss58Format: 2 });
+        const bot = keyring.createFromUri(MNEMONIC);
+        console.log(bot.address);
+        console.log(injector);
+
+//        const u = keyring.addFromUri('//Bob');
         // Sign and send the transaction
-        await transfer.signAndSend(
-            account.address,
-            { signer: injector.signer },
+        const transfer = await api.tx.balances
+            .transferKeepAlive(account.address, 20000000000);
+        //account.address
+        const txHash = await transfer.signAndSend(
+            bot,
             ({ status: txStatus, events = [] }) => {
               if (txStatus.isInBlock) {
                 setStatus(`Transaction included in block ${txStatus.asInBlock}`);
@@ -224,6 +241,9 @@ const FaucetStep = () => {
               }
             }
           );
+
+          console.log(`Submitted with hash ${txHash}`);
+
         } catch (err) {
           console.error('Request tokens error:', err);
           console.log('Account object:', account);
@@ -231,7 +251,7 @@ const FaucetStep = () => {
           setLoading(false);
         }
       };
-  
+
     const formatBalance = (balance) => {
       if (!balance) return '0';
       return (parseInt(balance) / 1e12).toFixed(4);
