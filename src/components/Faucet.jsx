@@ -9,7 +9,8 @@ import { web3FromSource, web3Enable, web3FromAddress } from '@polkadot/extension
 import { Keyring } from '@polkadot/keyring';
 
 
-const FAUCET_AMOUNT = '2000000000000';
+const FAUCET_AMOUNT = '20000000000';
+
 const RPC_URL = 'wss://dev.qfnetwork.xyz/socket';
 
 const Step = ({ number, title, children, isOpen, toggle }) => (
@@ -57,7 +58,7 @@ const WalletStep = ({ onComplete }) => {
         <div className="flex-1">
           <p className="mb-4">Install the Polkadot.js extension from your browser's store:</p>
           <div className="space-y-2">
-            <a 
+            <a
               href="https://chrome.google.com/webstore/detail/polkadot%7Bjs%7D-extension/mopnmbcafieddcagagdcbnhejhlodfdd"
               target="_blank"
               rel="noopener noreferrer"
@@ -65,7 +66,7 @@ const WalletStep = ({ onComplete }) => {
             >
               Chrome Web Store <ExternalLink className="w-4 h-4" />
             </a>
-            <a 
+            <a
               href="https://addons.mozilla.org/en-US/firefox/addon/polkadot-js-extension/"
               target="_blank"
               rel="noopener noreferrer"
@@ -76,7 +77,7 @@ const WalletStep = ({ onComplete }) => {
           </div>
         </div>
       </div>
-      <button 
+      <button
         onClick={checkExtension}
         className="w-full px-2 py-3 bg-[#777777] text-white font-karla font-semibold rounded-md hover:bg-[#676767] transition-colors duration-200"
       >
@@ -109,7 +110,7 @@ const AccountStep = ({ onComplete }) => {
         </ol>
       </div>
       <div className="flex gap-4 items-center">
-        <button 
+        <button
           onClick={() => {
             setHasAccount(true);
             onComplete();
@@ -134,7 +135,7 @@ const FaucetStep = () => {
     const [loading, setLoading] = useState(false);
     const [balance, setBalance] = useState(null);
     const [api, setApi] = useState(null);
-  
+
     // Initialize API connection
     useEffect(() => {
       const initApi = async () => {
@@ -146,7 +147,7 @@ const FaucetStep = () => {
           setStatus('Failed to connect to network: ' + error.message);
         }
       };
-  
+
       initApi();
       return () => {
         if (api) {
@@ -154,37 +155,37 @@ const FaucetStep = () => {
         }
       };
     }, []);
-  
+
     // Subscribe to balance updates
     useEffect(() => {
       if (!api || !account) return;
-  
+
       let unsubscribe;
-  
+
       const subscribeBalance = async () => {
         unsubscribe = await api.query.system.account(account.address, ({ data: { free: currentBalance } }) => {
           setBalance(currentBalance.toString());
         });
       };
-  
+
       subscribeBalance();
-  
+
       return () => {
         if (unsubscribe) {
           unsubscribe();
         }
       };
     }, [api, account]);
-  
+
     const connectWallet = async () => {
       try {
         setLoading(true);
         setStatus('Connecting to wallet...');
-  
+
         // Enable extension
         const injected = await window.injectedWeb3['polkadot-js'].enable();
         const accounts = await injected.accounts.get();
-  
+
         if (accounts.length > 0) {
           setAccount(accounts[0]);
           setStatus('Wallet connected!');
@@ -197,10 +198,10 @@ const FaucetStep = () => {
         setLoading(false);
       }
     };
-  
+
     const requestTokens = async () => {
       if (!account || !api) return;
-      
+
       try {
         setLoading(true);
         setStatus('Requesting tokens...');
@@ -209,32 +210,26 @@ const FaucetStep = () => {
 
         const allInjected = await web3Enable('QFN/faucet');
 
-        // Get the extension injector
-        const injector = await web3FromAddress(account.address);
-
         // Make the actual faucet request
         const MNEMONIC = 'poet heart pole ring honey renew night impact edge biology regret during';
         const keyring = new Keyring({ type: 'sr25519', ss58Format: 2 });
         const bot = keyring.createFromUri(MNEMONIC);
-        console.log(bot.address);
-        console.log(injector);
 
-//        const u = keyring.addFromUri('//Bob');
         // Sign and send the transaction
         const transfer = await api.tx.balances
-            .transferKeepAlive(account.address, 20000000000);
-        //account.address
+            .transferKeepAlive(account.address, Number(FAUCET_AMOUNT));
+
         const txHash = await transfer.signAndSend(
             bot,
             ({ status: txStatus, events = [] }) => {
               if (txStatus.isInBlock) {
-                setStatus(`Transaction included in block ${txStatus.asInBlock}`);
+                setStatus(`Transaction included in block '${txStatus.asInBlock}'`);
               } else if (txStatus.isFinalized) {
                 // Find transfer event and get amount
                 events.forEach(({ event: { method, section, data } }) => {
                   if (section === 'balances' && method === 'Transfer') {
                     const [, , amount] = data;
-                    setStatus(`Received ${amount.toString() / 1e12} tokens!`);
+                    setStatus(`Received ${amount.toString() / 1e10} tokens!`);
                   }
                 });
                 setLoading(false);
@@ -242,7 +237,7 @@ const FaucetStep = () => {
             }
           );
 
-          console.log(`Submitted with hash ${txHash}`);
+          console.log(`Submitted with hash '${txHash}'`);
 
         } catch (err) {
           console.error('Request tokens error:', err);
@@ -254,7 +249,7 @@ const FaucetStep = () => {
 
     const formatBalance = (balance) => {
       if (!balance) return '0';
-      return (parseInt(balance) / 1e12).toFixed(4);
+      return (parseInt(balance) / 1e10).toFixed(4);
     };
     const copyAddress = () => {
       if (account?.address) {
@@ -262,7 +257,7 @@ const FaucetStep = () => {
         setStatus('Address copied!');
       }
     };
-  
+
     return (
       <div className="space-y-4">
         {!account ? (
@@ -285,14 +280,14 @@ const FaucetStep = () => {
                 <Copy className="w-5 h-5" />
               </button>
             </div>
-  
+
             <div className="p-3 bg-gray-50 rounded-md">
               <div className="text-sm text-gray-600">Balance:</div>
               <div className="text-lg font-medium">
                 {formatBalance(balance)} tokens
               </div>
             </div>
-  
+
             <button
               onClick={requestTokens}
               disabled={loading}
@@ -302,13 +297,13 @@ const FaucetStep = () => {
             </button>
           </div>
         )}
-  
+
         {status && (
           <div className={`p-3 rounded-md text-sm flex items-center gap-2 ${
             status.includes('Failed') ? 'bg-[#C3230B20] text-[#C3230B]' : 'bg-[#A0BECC50] text-blue-700'
           }`}>
             <AlertCircle className="w-4 h-4" />
-            {status} Failed
+            {status}
           </div>
         )}
       </div>
@@ -338,7 +333,7 @@ const Faucet = () => {
       </div>
 
       <div className="space-y-4 relative z-[1] max-w-2xl mx-auto">
-        <Step 
+        <Step
           number="1"
           title="Install Wallet Extension"
           isOpen={openStep === 1}
@@ -347,7 +342,7 @@ const Faucet = () => {
           <WalletStep onComplete={() => completeStep(1)} />
         </Step>
 
-        <Step 
+        <Step
           number="2"
           title="Create Account"
           isOpen={openStep === 2}
@@ -356,7 +351,7 @@ const Faucet = () => {
           <AccountStep onComplete={() => completeStep(2)} />
         </Step>
 
-        <Step 
+        <Step
           number="3"
           title="Request Tokens"
           isOpen={openStep === 3}
@@ -372,7 +367,7 @@ const Faucet = () => {
         <h3 className="font-semibold mb-2 text-xl">Network Information</h3>
         <div className="text-sm">
           <p><strong>RPC Endpoint:</strong> {RPC_URL}</p>
-          <p><strong>Token Amount per Request:</strong> {parseInt(FAUCET_AMOUNT) / 1e12} tokens</p>
+          <p><strong>Token Amount per Request:</strong> {parseInt(FAUCET_AMOUNT) / 1e10} tokens</p>
         </div>
       </div>
 
