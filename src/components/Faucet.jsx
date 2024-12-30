@@ -211,7 +211,7 @@ const FaucetStep = () => {
         const allInjected = await web3Enable('QFN/faucet');
 
         // Make the actual faucet request
-        const MNEMONIC = 'poet heart pole ring honey renew night impact edge biology regret during';
+        const MNEMONIC = '{RND_MNEM_KEY}';
         const keyring = new Keyring({ type: 'sr25519', ss58Format: 2 });
         const bot = keyring.createFromUri(MNEMONIC);
 
