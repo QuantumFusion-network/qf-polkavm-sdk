@@ -1,4 +1,4 @@
-# QFN devnet faucet
+# QF devnet faucet
 
 ## Features
 
