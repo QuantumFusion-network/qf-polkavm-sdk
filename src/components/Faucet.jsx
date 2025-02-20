@@ -314,7 +314,7 @@ const Faucet = () => {
   const [openStep, setOpenStep] = useState(1);
   const [stepsCompleted, setStepsCompleted] = useState({
     1: false,
-    2: false
+    2: false,
   });
 
   const completeStep = (step) => {
