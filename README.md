@@ -1,1 +1,1 @@
-# qf-smart-contracts
+# qf-polkavm-sdk
