@@ -21,5 +21,5 @@ macro_rules! host_functions {
             fn account_id() -> u64;
             fn caller() -> u64;
         }
-    }
+    };
 }
