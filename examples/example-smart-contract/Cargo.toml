@@ -1,0 +1,10 @@
+[package]
+name = "example-smart-contract"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+polkavm-derive = { git = "https://github.com/paritytech/polkavm.git", tag = "v0.21.0" }
+qf-polkavm-sdk = { path = "../../../qf-polkavm-sdk" }
+
