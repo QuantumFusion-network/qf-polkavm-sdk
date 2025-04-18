@@ -1,3 +1,13 @@
 ## Run commands from the project root
-## Install deps: npm install
-## Run project: npm run dev
+
+1. Install deps
+
+```bash
+npm install
+```
+
+2. Run project
+
+```bash
+npm run dev
+```
