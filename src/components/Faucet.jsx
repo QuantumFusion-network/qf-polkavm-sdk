@@ -168,7 +168,7 @@ const ContractStep = ({api, account, injector, setInfo, info, setExtrinsic, extr
 
             console.log({name, data})
 
-            const extrinsic = api.tx.qfPolkaVM.upload(data);
+            const extrinsic = api.tx.qfPolkaVM.upload("0x" + data.toHex());
 
             console.log({extrinsic})
 
@@ -282,14 +282,14 @@ const Faucet = () => {
 
       // Try to find contract upload event
       const uploadedEvent = events.find(
-        ({event}) => event.section === "qfPolkaVM" && event.method === "ContractUploaded"
+        ({event}) => event.section === "qfPolkaVM" && event.method === "ProgramBlobUploaded"
       );
 
       if (uploadedEvent) {
-        const contractAddress = uploadedEvent.event.data[0].toString();
+        const contractAddress = uploadedEvent.event.data[1].toString();
         console.log("📦 Contract uploaded at:", contractAddress);
       } else {
-        console.warn("⚠️ qfPolkaVM.ContractUploaded event not found.");
+        console.warn("⚠️ qfPolkaVM.ProgramBlobUploaded event not found.");
       }
     });
   }
