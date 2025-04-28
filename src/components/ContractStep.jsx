@@ -157,17 +157,7 @@ export const ContractStep = ({api, account, injector, setContractAddress}) => {
         setContractAddress(contractAddress)
 
         const exportsRaw = uploadedEvent.event.data[2];
-        const methodNamesRaw = exportsRaw.toJSON().map((bytes) =>
-          new TextDecoder().decode(Uint8Array.from(bytes)).toString()
-        );
-
-
-
-        const methodNames = methodNamesRaw.map(str => {
-          const bytes = new Uint8Array([...str].map(c => c.charCodeAt(0)));
-          const decoded = new TextDecoder('utf-8').decode(bytes);
-          return decoded;
-        });
+        const methodNames = exportsRaw.map(bytes => new TextDecoder('utf-8').decode(bytes));
 
         console.log('methodNames ', methodNames)
 
