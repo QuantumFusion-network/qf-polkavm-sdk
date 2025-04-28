@@ -31,16 +31,17 @@ export const DecodedInspect = ({inspect, hex}) => {
 
   return (
     <div className={"rounded-lg border bg-[#F5F4F4] p-3"}>
-      <table>
-        <tbody>
-        {formatted.map(({name, value}, i) => (
-          <tr key={i}>
-            <td><label className={"font-semibold text-md pr-2"}>{name}</label></td>
-            <td>{value}</td>
-          </tr>
-        ))}
-        </tbody>
-      </table>
+      {formatted.map(({name, value}, i) => (
+        <div className="flex flex-wrap" key={i}>
+          {!!name && (
+            <div><label className={"font-semibold text-md pr-2"}>{name}:</label></div>
+          )}
+
+          <div className="max-w-[100%] break-words">
+            {value.trim()}
+          </div>
+        </div>
+      ))}
 
     </div>
   )

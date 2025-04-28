@@ -9,7 +9,7 @@ export function Output({label, isTrimmed, value,}) {
       <div className={"font-semibold text-md"}>
         {label}
       </div>
-      <div>
+      <div className="break-words">
         {isTrimmed && isString(value) && (value.length > 512)
           ? `${value.slice(0, 256)}…${value.slice(-256)}`
           : value
