@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 export const AccountStep = ({account}) => {
   return (
@@ -9,7 +10,7 @@ export const AccountStep = ({account}) => {
           <ol className="list-decimal pl-4 space-y-2">
             <li>Click the Polkadot{'{.js}'} extension icon in your browser</li>
             <li>Click the big plus (+) button</li>
-            <li>Select "Create new account"</li>
+            <li>Select &#34;Create new account&#34;</li>
             <li>
               <strong className="text-[#C3230B]">IMPORTANT:</strong> Save your seed phrase securely!
             </li>
@@ -32,4 +33,15 @@ export const AccountStep = ({account}) => {
 
     </div>
   );
+};
+
+AccountStep.propTypes = {
+  account: PropTypes.shape({
+    address: PropTypes.string.isRequired,
+    meta: PropTypes.shape({
+      name: PropTypes.string,
+      source: PropTypes.string
+    }),
+    type: PropTypes.string // sr25519, ed25519 и т.д. (опционально)
+  }).isRequired
 };

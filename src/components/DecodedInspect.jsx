@@ -1,5 +1,6 @@
 import {u8aToHex} from "@polkadot/util";
 import {useMemo} from "react";
+import PropTypes from "prop-types";
 
 function formatInspect({inner = [], name = '', outer = []}, result = []) {
   if (outer.length) {
@@ -19,7 +20,7 @@ function formatInspect({inner = [], name = '', outer = []}, result = []) {
   return result;
 }
 
-export const DecodedInspect = ({inspect, hex}) => {
+export const DecodedInspect = ({inspect}) => {
   const formatted = useMemo(
     () => inspect && formatInspect(inspect),
     [inspect]
@@ -45,5 +46,8 @@ export const DecodedInspect = ({inspect, hex}) => {
 
     </div>
   )
-
 }
+
+DecodedInspect.propTypes = {
+  inspect: PropTypes.func.isRequired
+};

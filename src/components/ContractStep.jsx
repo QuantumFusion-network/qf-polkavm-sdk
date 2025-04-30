@@ -59,7 +59,7 @@ function extract(isCall, extrinsic, payload) {
   ];
 }
 
-export const ContractStep = ({api, account, injector, setContractAddress}) => {
+export const ContractStep = ({api, account, injector, setContractAddress, setContractMethods}) => {
 
   const [deployLogs, setDeployLogs] = useState([]);
   const [extrinsic, setExtrinsic] = useState();
@@ -76,19 +76,13 @@ export const ContractStep = ({api, account, injector, setContractAddress}) => {
 
         reader.onload = ({target}) => {
           if (target?.result) {
-            const name = file.name;
             const data = convertResult(target.result);
-
-
-            console.log({name, data})
 
             const hex = Array.from(data)
               .map(b => b.toString(16).padStart(2, '0'))
               .join('');
 
             const extrinsic = api.tx.qfPolkaVM.upload("0x" + hex);
-
-            console.log({extrinsic})
 
             setInfo(extract(true, extrinsic, undefined))
             setExtrinsic(extrinsic)
@@ -137,9 +131,7 @@ export const ContractStep = ({api, account, injector, setContractAddress}) => {
         const dispatchError = failure.event.data[0];
         if (dispatchError.isModule) {
           const decoded = api.registry.findMetaError(dispatchError.asModule);
-          console.error(`❌ Extrinsic failed: ${decoded.section}.${decoded.name}`);
           _logs.push(`❌ Extrinsic failed: ${decoded.section}.${decoded.name}`);
-          console.error(`📖 Reason: ${decoded.docs.join(' ')}`);
           _logs.push(`📖 Reason: ${decoded.docs.join(' ')}`);
         } else {
           _logs.push("❌ Extrinsic failed with error:", dispatchError.toString());
@@ -152,14 +144,13 @@ export const ContractStep = ({api, account, injector, setContractAddress}) => {
 
       if (uploadedEvent) {
         const contractAddress = uploadedEvent.event.data[1].toString();
-        console.log("📦 Contract uploaded at:", contractAddress);
         _logs.push("📦 Contract uploaded at:", contractAddress);
         setContractAddress(contractAddress)
 
         const exportsRaw = uploadedEvent.event.data[2];
         const methodNames = exportsRaw.map(bytes => new TextDecoder('utf-8').decode(bytes));
 
-        console.log('methodNames ', methodNames)
+        if(methodNames.length) setContractMethods(methodNames)
 
       } else {
         console.warn("⚠️ qfPolkaVM.ProgramBlobUploaded event not found.");

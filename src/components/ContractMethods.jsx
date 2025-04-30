@@ -1,51 +1,95 @@
-import {useEffect} from "react";
+import {useState} from "react";
+import {TypeRegistry} from '@polkadot/types';
+import {Logs} from "./Logs.jsx";
+import PropTypes from 'prop-types';
 
-export const ContractMethods = ({api, contractAddress}) => {
+export const ContractMethods = ({api, injector, account, contractAddress}) => {
 
+  const [value, setValue] = useState()
+  const [logs, setLogs] = useState([])
 
-  useEffect(() => {
-    const cb = async () => {
-      console.log('api ', api.query.qfPolkaVMDev?.exports)
-      const exports = await api.query.qfPolkaVMDev.exports(contractAddress);
+  const onCall = async () => {
+    const methodBytes = new TextEncoder().encode('main');
+    const registry = new TypeRegistry();
 
-
-      if (exports.isSome) {
-        const methods = exports.unwrap().toJSON();
-        const names = methods.map((bytes) => new TextDecoder().decode(Uint8Array.from(bytes)));
-
-        console.log("📋 Exported methods:", names);
-      }
-    }
-
-    // cb()
-
-    const rawExports = [
-      '\x00\x00\x06\x01\x06\x04\x06\x04\x05\x00\x06\x00\x07\x05\x06\x00\x06\x02\x06\x05\x07\x02\x07\x03',
-      '\x00\x00\x07\x03\x07\x05\x06\x02\x05\x00\x06\x00\x07\x05\x06\x00\x06\x02\x06\x05\x07\x02\x07\x03',
-      '\x00\x00\x06\x00\x07\x05\x06\x00\x05\x00\x06\x00\x07\x05\x06\x00\x06\x02\x06\x05\x07\x02\x07\x03'
-    ];
-
-    const methodHexes = rawExports.map(str =>
-      Array.from(str).map(c => c.charCodeAt(0).toString(16).padStart(2, '0')).join(' ')
+    const argBytes = registry.createType('u32', value).toU8a();
+    const tx = api.tx.qfPolkaVM.execute(
+      contractAddress,
+      account.address,
+      BigInt(parseInt(value)),
+      1,
+      50000,
     );
 
-    console.log(methodHexes);
 
+    setLogs([])
 
-    const bytes = Uint8Array.from([
-      0x00, 0x00, 0x06, 0x01, 0x06, 0x04, 0x06, 0x04,
-      0x05, 0x00, 0x06, 0x00, 0x07, 0x05, 0x06, 0x00,
-      0x06, 0x02, 0x06, 0x05, 0x07, 0x02, 0x07, 0x03
-    ]);
+    const _logs = []
 
-    const decoded = new TextDecoder('utf-8', { fatal: true }).decode(bytes);
+    await tx.signAndSend(account.address, {signer: injector.signer}, ({status, events}) => {
+      _logs.push("📡 Status:", status.type);
 
-    console.log('decoded ', decoded);
-  }, []);
+      events.forEach(({event}) => {
+        const section = event.section;
+        const method = event.method;
+        const data = event.data.map(d => d.toHuman?.() || d.toString());
+
+        _logs.push(`📜 ${section}.${method}`, data);
+
+        if (section === 'system' && method === 'ExtrinsicFailed') {
+          const [error] = event.data;
+          if (error.isModule) {
+            const decoded = api.registry.findMetaError(error.asModule);
+            const {docs, name, section} = decoded;
+            _logs.push(`❌ ExtrinsicFailed: ${section}.${name} - ${docs.join(' ')}`);
+          } else {
+            _logs.push('❌ ExtrinsicFailed (Other):', error.toString());
+          }
+        }
+      });
+
+      if (status.isFinalized) {
+        _logs.push("🎉 Transaction finalized!");
+      }
+
+      setLogs(_logs)
+    });
+
+  }
+
 
   return (
-    <div className="space-y-4">
-      <h1>Contract address: {contractAddress}</h1>
+    <div>
+      <h1>Contract address: </h1>
+      <div className="mb-2">{contractAddress}</div>
+
+      <div className="mt-4 full-w rounded-lg border bg-[#F5F4F4] p-3">
+        <h1 className="mb-2">Execute main: </h1>
+        <input placeholder="Operation" className="w-full py-2 px-3 border rounded-lg" onChange={(e) => setValue(e.target.value)} value={value} type="text"/>
+        <button
+          className="mt-2 flex items-center justify-center py-2 px-3 font-karla font-semibold rounded-md transition-colors duration-200 p-3 text-[#fff] hover:bg-[#00c2489c] bg-[#00c248c9]"
+          onClick={onCall}>Submit
+        </button>
+
+        <Logs className={"mt-4 max-h-[300px] overflow-auto"} label={"Logs:"} logs={logs}/>
+
+      </div>
+
+
     </div>
   )
 }
+
+
+ContractMethods.propTypes = {
+  api: PropTypes.object.isRequired,
+  injector: PropTypes.shape({
+    signer: PropTypes.object.isRequired
+  }).isRequired,
+  account: PropTypes.shape({
+    address: PropTypes.string.isRequired,
+    meta: PropTypes.object
+  }).isRequired, // InjectedAccountWithMeta
+  contractAddress: PropTypes.string.isRequired, // SS58 address
+  contractMethods: PropTypes.arrayOf(PropTypes.string).isRequired // ['add', 'balanceOf', ...]
+};

@@ -1,9 +1,8 @@
-import React from 'react';
-
 import {isString} from '@polkadot/util';
+import PropTypes from "prop-types";
 
 
-export function Output({label, isTrimmed, value,}) {
+export function Output({label, isTrimmed, value}) {
   return (
     <div className={"rounded-lg border bg-[#F5F4F4] p-3"}>
       <div className={"font-semibold text-md"}>
@@ -18,3 +17,13 @@ export function Output({label, isTrimmed, value,}) {
     </div>
   );
 }
+
+Output.propTypes = {
+  label: PropTypes.string,
+  isTrimmed: PropTypes.bool,
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+    PropTypes.node
+  ])
+};

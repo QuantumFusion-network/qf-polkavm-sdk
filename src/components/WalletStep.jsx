@@ -15,7 +15,7 @@ export const WalletStep = () => {
       <div className="flex flex-col sm:flex-row items-start gap-4 mb-3">
 
         <div className="flex-1">
-          <p className="mb-4">Install the Polkadot.js extension from your browser's store:</p>
+          <p className="mb-4">Install the Polkadot.js extension from your browser&#39;s store:</p>
           <div className="space-y-2">
             <a
               href="https://chrome.google.com/webstore/detail/polkadot%7Bjs%7D-extension/mopnmbcafieddcagagdcbnhejhlodfdd"

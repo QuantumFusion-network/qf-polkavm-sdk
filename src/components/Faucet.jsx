@@ -2,7 +2,7 @@
 //
 //
 
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {Wallet} from 'lucide-react';
 import {ApiPromise, WsProvider} from '@polkadot/api';
 import {web3Accounts, web3Enable, web3FromAddress} from '@polkadot/extension-dapp';
@@ -11,6 +11,8 @@ import {WalletStep} from "./WalletStep.jsx";
 import {ContractStep} from "./ContractStep.jsx";
 import {AccountStep} from "./AccountStep.jsx";
 import {ContractMethods} from "./ContractMethods.jsx";
+import {Logs} from "./Logs.jsx";
+
 const RPC_URL = 'wss://dev.qfnetwork.xyz/socket';
 
 const Faucet = () => {
@@ -18,7 +20,24 @@ const Faucet = () => {
   const [account, setAccount] = useState(null);
   const [injector, setInjector] = useState(null);
   const [api, setApi] = useState(null);
-  const [contractAddress, setContractAddress] = useState("5H2xQFnmx73YMXmYPjUprqZe5Cuaa3HzDSsZMsqChstwBYwC");
+  const [contractAddress, setContractAddress] = useState(null);
+  const [contractMethods, setContractMethods] = useState([]);
+  const [logs, setLogs] = useState([]);
+
+  const [rpc, setRpc] = useState(RPC_URL)
+  const rpcRef = useRef()
+
+  const onSetRpc = () => {
+    try {
+      if (rpcRef.current?.value) {
+        setRpc(rpcRef.current.value)
+      }
+      setLogs([])
+    } catch (e) {
+      console.log(e)
+      setLogs([...logs, 'Error to connect'])
+    }
+  }
 
   const connectWallet = async () => {
     await web3Enable("DApp");
@@ -33,24 +52,28 @@ const Faucet = () => {
     setAccount(account)
   };
 
-  useEffect(() => {
-    const initApi = async () => {
-      try {
-        const wsProvider = new WsProvider(RPC_URL);
-        const api = await ApiPromise.create({provider: wsProvider});
-        setApi(api);
-      } catch (error) {
-        console.log('Failed to connect to network: ' + error.message);
-      }
-    };
+  const connectApi = async (rpc) => {
+    try {
+      const wsProvider = new WsProvider(rpc);
+      const api = await ApiPromise.create({provider: wsProvider});
+      setApi(api);
+      setLogs([])
+    } catch (error) {
+      setLogs([...logs, 'Failed to connect to network: ' + error.message]);
+    }
+  };
 
-    initApi();
+  useEffect(() => {
+
+
+    connectApi();
+
     return () => {
       if (api) {
         api.disconnect();
       }
     };
-  }, []);
+  }, [rpc]);
 
 
   const isReady = api?._isReady
@@ -105,10 +128,19 @@ const Faucet = () => {
                 account={account}
                 api={api}
                 setContractAddress={setContractAddress}
+                setContractMethods={setContractMethods}
+
               />
             )}
 
-            {!!contractAddress && <ContractMethods api={api} contractAddress={contractAddress}/>}
+            {!!accountAddress && !!contractAddress && (
+              <ContractMethods
+                injector={injector}
+                account={account}
+                api={api} contractMethods={contractMethods || []}
+                contractAddress={contractAddress}
+              />
+            )}
           </div>
         </div>
       </div>
@@ -118,7 +150,17 @@ const Faucet = () => {
       <div className="mt-8 p-5 relative z-[1] bg-white max-w-2xl mx-auto rounded-2xl border border-black">
         <h3 className="font-semibold mb-2 text-xl">Network Information</h3>
         <div className="text-sm">
-          <p><strong>RPC Endpoint:</strong> {RPC_URL}</p>
+          <p><strong>RPC Endpoint:</strong> {rpc}</p>
+        </div>
+
+        <input ref={rpcRef} placeholder={rpc} className="mt-4 w-full py-2 px-3 border rounded-lg" type="text"/>
+        <button
+          className="mt-2 flex items-center justify-center py-2 px-3 font-karla font-semibold rounded-md transition-colors duration-200 p-3 text-[#fff] hover:bg-[#00c2489c] bg-[#00c248c9]"
+          onClick={onSetRpc}>
+          Submit
+        </button>
+        <div className="mt-4">
+          <Logs logs={logs}/>
         </div>
       </div>
 

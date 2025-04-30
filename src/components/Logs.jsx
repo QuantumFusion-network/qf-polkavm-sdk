@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from "prop-types";
 
 export function Logs({logs, label, className}) {
 
@@ -22,3 +23,9 @@ export function Logs({logs, label, className}) {
     </div>
   );
 }
+
+Logs.propTypes = {
+  logs: PropTypes.arrayOf(PropTypes.string),
+  label: PropTypes.string,
+  className: PropTypes.string
+};
