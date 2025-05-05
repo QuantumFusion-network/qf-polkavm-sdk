@@ -92,7 +92,7 @@ const Faucet = () => {
         <div className="mt-8 p-5 relative z-[1] bg-white max-w-2xl mx-auto rounded-2xl border border-black">
           <h3 className="font-semibold mb-2 text-xl">Network Information</h3>
           <div className="text-sm">
-            <p><strong>RPC Endpoint:</strong> {RPC_URL}</p>
+            <p><strong>RPC Endpoint:</strong> {rpc}</p>
           </div>
         </div>
       </div>

@@ -17,7 +17,7 @@ export const ContractMethods = ({api, injector, account, contractAddress}) => {
       contractAddress,
       account.address,
       BigInt(parseInt(value)),
-      1,
+      25,
       50000,
     );
 
