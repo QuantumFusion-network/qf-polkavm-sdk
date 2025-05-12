@@ -20,6 +20,9 @@ macro_rules! host_functions {
             fn block_number() -> u64;
             fn account_id() -> u64;
             fn caller() -> u64;
+            fn get(storage_key_pointer: u32, pointer: u32) -> u64;
+            fn set(storage_key_pointer: u32, buffer: u32) -> u64;
+            fn delete(storage_key_pointer: u32) -> u64;
         }
     };
 }
