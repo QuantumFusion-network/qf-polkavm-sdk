@@ -5,17 +5,51 @@ use parity_scale_codec::{Decode, Encode};
 
 qf_polkavm_sdk::host_functions!();
 
+#[derive(Encode, Decode)]
+enum Command {
+    Transfer,       // 0x00
+    Balance,        // 0x01
+    BalanceOf,      // 0x02
+    BlockNumber,    // 0x03
+    InfinityLoop,   // 0x04
+    Inc,            // 0x05
+    Delete,         // 0x06
+}
+
+#[derive(Encode, Decode, Default)]
+struct Counter {
+    counter: u32,
+}
+
 #[polkavm_derive::polkavm_export]
-extern "C" fn main(op: u32) -> u64 {
-    match op {
-        0 => call_transfer(),
-        1 => call_balance(),
-        2 => call_balance_of(),
-        3 => call_block_number(),
-        4 => call_infinity_loop(),
-        5 => call_inc(),
-        6 => call_delete(),
-        _ => unimplemented!(),
+extern "C" fn main() -> u64 {
+    let mut buffer = [0u8; 64];
+    let pointer: *mut [u8; 64] = &mut buffer;
+
+    let command: Command;
+
+    unsafe {
+        match get_user_data(pointer as u32) {
+            0 => (),
+            other => return other,
+        }
+
+        let mut tmp: &[u8] = &buffer;
+        if let Ok(new_command) = Command::decode(&mut tmp) {
+            command = new_command;
+        } else {
+            return 222
+        }
+    }
+
+    match command {
+        Command::Transfer => call_transfer(),
+        Command::Balance => call_balance(),
+        Command::BalanceOf => call_balance_of(),
+        Command::BlockNumber => call_block_number(),
+        Command::InfinityLoop => call_infinity_loop(),
+        Command::Inc => call_inc(),
+        Command::Delete => call_delete(),
     }
 }
 
@@ -39,10 +73,7 @@ fn call_transfer() -> u64 {
     unsafe { transfer(2, 0) }
 }
 
-#[derive(Encode, Decode, Default)]
-struct Counter {
-    counter: u32,
-}
+
 
 fn call_inc() -> u64 {
     // "                                                             foo"
@@ -58,10 +89,10 @@ fn call_inc() -> u64 {
     let pointer: *mut [u8; 64] = &mut buffer;
 
     unsafe {
-        let get_result = get(storage_key_pointer as u32, pointer as u32);
-        if get_result != 0 {
-            return get_result;
-        };
+        match get(storage_key_pointer as u32, pointer as u32) {
+            0 => (),
+            other => return other,
+        }
 
         let mut tmp: &[u8] = &buffer;
         let mut counter = if buffer == [0u8; 64] {
@@ -76,9 +107,9 @@ fn call_inc() -> u64 {
             buffer[pos] = *elem
         }
 
-        let set_result = set(storage_key_pointer as u32, pointer as u32);
-        if set_result != 0 {
-            return set_result;
+        match set(storage_key_pointer as u32, pointer as u32) {
+            0 => (),
+            other => return other,
         }
     }
 
