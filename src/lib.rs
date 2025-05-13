@@ -9,11 +9,6 @@ macro_rules! host_functions {
             Layout,
         };
 
-        /// A page in Wasm is `64KiB`
-        /// todo: remove
-        #[allow(dead_code)]
-        const PAGE_SIZE: usize = 64 * 1024;
-
         static mut INNER: Option<InnerAlloc> = None;
 
         static mut RISCV_HEAP: [u8; 1024 * 1024] = [0; 1024 * 1024];
@@ -21,7 +16,6 @@ macro_rules! host_functions {
         #[global_allocator]
         static ALLOCATOR: BumpAllocator = BumpAllocator { };
 
-        /// A bump allocator suitable for use in a Wasm environment.
         pub struct BumpAllocator;
 
         unsafe impl GlobalAlloc for BumpAllocator {
@@ -44,7 +38,7 @@ macro_rules! host_functions {
             #[inline]
             unsafe fn alloc_zeroed(&self, layout: Layout) -> *mut u8 {
                 // todo
-                // A new page in Wasm is guaranteed to already be zero initialized, so we can just
+                // A new page is guaranteed to already be zero initialized, so we can just
                 // use our regular `alloc` call here and save a bit of work.
                 //
                 // See: https://webassembly.github.io/spec/core/exec/modules.html#growing-memories
@@ -127,9 +121,7 @@ macro_rules! host_functions {
 
         /// Calculates the number of pages of memory needed for an allocation of `size` bytes.
         ///
-        /// This function rounds up to the next page. For example, if we have an allocation of
-        /// `size = PAGE_SIZE / 2` this function will indicate that one page is required to
-        /// satisfy the allocation.
+        /// This function rounds up to the next page.
         #[inline]
         #[allow(dead_code)]
         fn required_pages(_size: usize) -> Option<usize> {
