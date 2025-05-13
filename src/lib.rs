@@ -8,7 +8,7 @@ macro_rules! host_functions {
 
         static mut INNER: Option<InnerAlloc> = None;
 
-        static mut RISCV_HEAP: [u8; 1024 * 1024] = [0; 1024 * 1024];
+        static mut HEAP: [u8; 1024 * 1024] = [0; 1024 * 1024];
 
         #[global_allocator]
         static ALLOCATOR: BumpAllocator = BumpAllocator {};
@@ -66,13 +66,13 @@ macro_rules! host_functions {
             fn heap_start() -> usize {
                 #[allow(static_mut_refs)]
                 unsafe {
-                    RISCV_HEAP.as_mut_ptr() as usize
+                    HEAP.as_mut_ptr() as usize
                 }
             }
 
             #[allow(static_mut_refs)]
             fn heap_end() -> usize {
-                Self::heap_start() + unsafe { RISCV_HEAP.len() }
+                Self::heap_start() + unsafe { HEAP.len() }
             }
 
             #[allow(dead_code)]
@@ -141,6 +141,7 @@ macro_rules! host_functions {
             fn block_number() -> u64;
             fn account_id() -> u64;
             fn caller() -> u64;
+            fn get_user_data(pointer: u32) -> u64;
             fn get(storage_key_pointer: u32, pointer: u32) -> u64;
             fn set(storage_key_pointer: u32, buffer: u32) -> u64;
             fn delete(storage_key_pointer: u32) -> u64;
