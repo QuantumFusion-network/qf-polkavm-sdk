@@ -4,17 +4,14 @@
 #[macro_export]
 macro_rules! host_functions {
     () => {
-        use core::alloc::{
-            GlobalAlloc,
-            Layout,
-        };
+        use core::alloc::{GlobalAlloc, Layout};
 
         static mut INNER: Option<InnerAlloc> = None;
 
         static mut RISCV_HEAP: [u8; 1024 * 1024] = [0; 1024 * 1024];
 
         #[global_allocator]
-        static ALLOCATOR: BumpAllocator = BumpAllocator { };
+        static ALLOCATOR: BumpAllocator = BumpAllocator {};
 
         pub struct BumpAllocator;
 

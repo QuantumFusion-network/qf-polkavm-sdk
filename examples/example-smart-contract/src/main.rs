@@ -1,7 +1,7 @@
 #![no_std]
 #![no_main]
 
-use parity_scale_codec::{Encode, Decode};
+use parity_scale_codec::{Decode, Encode};
 
 qf_polkavm_sdk::host_functions!();
 
@@ -47,7 +47,11 @@ struct Counter {
 fn call_inc() -> u64 {
     // "                                                             foo"
     // "0x20202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020666F6F"
-    let storage_key: [u8; 64] = [32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 102, 111, 111];
+    let storage_key: [u8; 64] = [
+        32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
+        32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
+        32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 102, 111, 111,
+    ];
     let storage_key_pointer: *const [u8; 64] = &storage_key;
 
     let mut buffer = [0u8; 64];
@@ -56,7 +60,7 @@ fn call_inc() -> u64 {
     unsafe {
         let get_result = get(storage_key_pointer as u32, pointer as u32);
         if get_result != 0 {
-            return get_result
+            return get_result;
         };
 
         let mut tmp: &[u8] = &buffer;
@@ -74,7 +78,7 @@ fn call_inc() -> u64 {
 
         let set_result = set(storage_key_pointer as u32, pointer as u32);
         if set_result != 0 {
-            return set_result
+            return set_result;
         }
     }
 
@@ -84,13 +88,17 @@ fn call_inc() -> u64 {
 fn call_delete() -> u64 {
     // "                                                             foo"
     // "0x20202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020666F6F"
-    let storage_key: [u8; 64] = [32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 102, 111, 111];
+    let storage_key: [u8; 64] = [
+        32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
+        32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
+        32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 102, 111, 111,
+    ];
     let storage_key_pointer: *const [u8; 64] = &storage_key;
 
     unsafe {
         let delete_result = delete(storage_key_pointer as u32);
         if delete_result != 0 {
-            return delete_result
+            return delete_result;
         };
     }
 
