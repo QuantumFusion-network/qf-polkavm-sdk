@@ -7,13 +7,13 @@ qf_polkavm_sdk::host_functions!();
 
 #[derive(Encode, Decode)]
 enum Command {
-    Transfer,       // 0x00
-    Balance,        // 0x01
-    BalanceOf,      // 0x02
-    BlockNumber,    // 0x03
-    InfinityLoop,   // 0x04
-    Inc,            // 0x05
-    Delete,         // 0x06
+    Transfer,     // 0x00
+    Balance,      // 0x01
+    BalanceOf,    // 0x02
+    BlockNumber,  // 0x03
+    InfinityLoop, // 0x04
+    Inc,          // 0x05
+    Delete,       // 0x06
 }
 
 #[derive(Encode, Decode, Default)]
@@ -38,7 +38,7 @@ extern "C" fn main() -> u64 {
         if let Ok(new_command) = Command::decode(&mut tmp) {
             command = new_command;
         } else {
-            return 222
+            return 1;
         }
     }
 
@@ -72,8 +72,6 @@ fn call_infinity_loop() -> u64 {
 fn call_transfer() -> u64 {
     unsafe { transfer(2, 0) }
 }
-
-
 
 fn call_inc() -> u64 {
     // "                                                             foo"
