@@ -4,11 +4,11 @@
 
 # Quantum Fusion
 
-[![License](https://img.shields.io/github/license/QuantumFusion-network/qf-solochain?color=green)](https://github.com/QuantumFusion-network/qf-solochain/blob/main/LICENSE)
+[![License](https://img.shields.io/github/license/QuantumFusion-network/qf-solochain?color=green)](https://github.com/QuantumFusion-network/qf-polkavm-sdk/blob/main/LICENSE)
 <br>
-![GitHub contributors](https://img.shields.io/github/contributors/QuantumFusion-network/qf-solochain)
-![GitHub commit activity](https://img.shields.io/github/commit-activity/m/QuantumFusion-network/qf-solochain)
-![GitHub last commit](https://img.shields.io/github/last-commit/QuantumFusion-network/qf-solochain)
+![GitHub contributors](https://img.shields.io/github/contributors/QuantumFusion-network/qf-polkavm-sdk)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/QuantumFusion-network/qf-polkavm-sdk)
+![GitHub last commit](https://img.shields.io/github/last-commit/QuantumFusion-network/qf-polkavm-sdk)
 <br>
 [![Twitter URL](https://img.shields.io/twitter/follow/QuantumFusion_?style=social)](https://x.com/QuantumFusion_)
 
@@ -19,6 +19,8 @@ For contributing to this project, please read [Contributing](#contributing) sect
 # QF PolkaVM SDK
 
 This framework allows to implement contracts for Quantum Fusion Network.
+
+For getting more technical information please follow to this [link](https://github.com/QuantumFusion-network/spec/blob/main/docs/PolkaVM/polkavm_pallet.md).
 
 ## Run examples
 
