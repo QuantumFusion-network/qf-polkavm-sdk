@@ -41,19 +41,19 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "877a4ace8713b0bcf2a4e7eec82529c029f1d0619886d18145fea96c3ffe5c0f"
 
 [[package]]
-name = "example-smart-contract"
+name = "hashbrown"
+version = "0.15.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bf151400ff0baff5465007dd2f3e717f3fe502074ca563069ce3a6629d07b289"
+
+[[package]]
+name = "hello-qf-polkavm"
 version = "0.1.0"
 dependencies = [
  "parity-scale-codec",
  "polkavm-derive",
  "qf-polkavm-sdk",
 ]
-
-[[package]]
-name = "hashbrown"
-version = "0.15.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bf151400ff0baff5465007dd2f3e717f3fe502074ca563069ce3a6629d07b289"
 
 [[package]]
 name = "impl-trait-for-tuples"
@@ -162,6 +162,7 @@ dependencies = [
 [[package]]
 name = "qf-polkavm-sdk"
 version = "0.1.0"
+source = "git+https://github.com/QuantumFusion-network/qf-polkavm-sdk#2f43067d922878d07bf9f12112054a62ff205144"
 
 [[package]]
 name = "quote"
