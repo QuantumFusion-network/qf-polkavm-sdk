@@ -40,7 +40,7 @@ See [docs/executables_and_runtimes.md](docs/executables_and_runtimes.md).
 cargo install --git https://github.com/paritytech/polkavm.git --tag v0.21.0 polkatool
 ```
 
-2. Build a hello-qf-polkavm
+2. Build smart-contract `examples/hello-qf-polkavm`
 
 ```bash
 export CRATE_NAME=hello-qf-polkavm
