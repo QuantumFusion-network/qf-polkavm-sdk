@@ -34,7 +34,7 @@ See [docs/executables_and_runtimes.md](docs/executables_and_runtimes.md).
 
 ## Compiling Smart Contracts for PolkaVM
 
-1. Install polkatool
+1. Install `polkatool`
 
 ```bash
 cargo install --git https://github.com/paritytech/polkavm.git --tag v0.21.0 polkatool
