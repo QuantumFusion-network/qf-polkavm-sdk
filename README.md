@@ -34,7 +34,31 @@ See [docs/executables_and_runtimes.md](docs/executables_and_runtimes.md).
 
 ## Compiling Smart Contracts for PolkaVM
 
-Please read section [Compiling Smart Contracts for PolkaVM](https://github.com/QuantumFusion-network/qf-solochain/blob/main/README.md).
+1. Install polkatool
+
+```bash
+cargo install --git https://github.com/paritytech/polkavm.git --tag v0.21.0 polkatool
+```
+
+2. Build a hello-qf-polkavm
+
+```bash
+export CRATE_NAME=hello-qf-polkavm
+mkdir -p output
+
+pushd "examples/${CRATE_NAME}"
+RUSTFLAGS="--remap-path-prefix=$(pwd)= --remap-path-prefix=${HOME}=~" \
+    cargo +nightly build  \
+        -Z build-std=core,alloc \
+        --target $(polkatool get-target-json-path --bitness 32) \
+        -q --release --bin "${CRATE_NAME}" -p "${CRATE_NAME}"
+popd
+
+polkatool link \
+    --run-only-if-newer \
+    -s "examples/${CRATE_NAME}/target/riscv32emac-unknown-none-polkavm/release/${CRATE_NAME}" \
+    -o "output/${CRATE_NAME}.polkavm"
+```
 
 ## Contributing
 
