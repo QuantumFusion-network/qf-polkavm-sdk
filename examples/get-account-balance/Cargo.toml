@@ -1,9 +1,0 @@
-[package]
-name = "get-account-balance"
-version = "0.1.0"
-edition = "2021"
-publish = false
-
-[dependencies]
-polkavm-derive = { git = "https://github.com/paritytech/polkavm.git", tag = "v0.21.0" }
-qf-polkavm-sdk = { git = "https://github.com/QuantumFusion-network/qf-polkavm-sdk", ref = "a0f7e7728da711ce9d5249a7801298c3638dde95" }
