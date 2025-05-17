@@ -26,12 +26,6 @@ For getting more technical information please follow to this [link](https://gith
 
 To run examples or other smart contracts first need to have install [qf-solochain](https://github.com/QuantumFusion-network/qf-solochain) or via [portal](http://portal.qfnetwork.xyz/).
 
-## Executables and runtimes
-
-This section describes the project's executables and runtimes and provides step-by-step instructions
- for running a local testnet. This guide is suitable for advanced users.
-See [docs/executables_and_runtimes.md](docs/executables_and_runtimes.md).
-
 ## Compiling Smart Contracts for PolkaVM
 
 1. Install `polkatool`
@@ -75,6 +69,3 @@ By contributing, you agree to adhere to our [Contributor Covenant Code of Conduc
 a respectful and inclusive environment.
 
 We appreciate your support and look forward to your contributions! 🚀
-
-[^1]: <https://forum.polkadot.network/t/announcing-polkavm-a-new-risc-v-based-vm-for-smart-contracts-and-possibly-more/3811#the-compilation-pipeline-7> "The compilation pipeline".
-[^2]: <https://github.com/paritytech/polkadot-sdk/tree/master/substrate/bin/utils/chain-spec-builder> "chain-spec-builder".
