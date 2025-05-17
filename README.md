@@ -1,8 +1,6 @@
 <div align="center">
 
-![Logo](Logo.jpg)
-
-# Quantum Fusion
+# QF Network PolkaVM SDK
 
 [![License](https://img.shields.io/github/license/QuantumFusion-network/qf-solochain?color=green)](https://github.com/QuantumFusion-network/qf-polkavm-sdk/blob/main/LICENSE)
 <br>
@@ -14,51 +12,39 @@
 
 </div>
 
+This framework enables the development of smart contracts for the Quantum Fusion Network. For the smart contract platform implementation details, please refer to the [PolkaVM pallet documentation](https://github.com/QuantumFusion-network/spec/blob/main/docs/PolkaVM/polkavm_pallet.md).
+
 For contributing to this project, please read [Contributing](#contributing) section.
 
-# QF PolkaVM SDK
+## Compiling example Smart Contract
 
-This framework allows to implement contracts for Quantum Fusion Network.
+The QF Network executes smart contracts in the PolkaVM virtual machine and requires PolkaVM tools for smart contracts compilation.
 
-For getting more technical information please follow to this [link](https://github.com/QuantumFusion-network/spec/blob/main/docs/PolkaVM/polkavm_pallet.md).
+1. Install `polkatool`.
 
-## Run examples
+    ```bash
+    cargo install --git https://github.com/paritytech/polkavm.git --tag v0.21.0 polkatool
+    ```
 
-To run examples or other smart contracts first need to have install [qf-solochain](https://github.com/QuantumFusion-network/qf-solochain) or via [portal](http://portal.qfnetwork.xyz/).
+1. Build smart-contract `examples/hello-qf-polkavm`.
 
-## Executables and runtimes
+    ```bash
+    export CRATE_NAME=hello-qf-polkavm
+    mkdir -p output
 
-This section describes the project's executables and runtimes and provides step-by-step instructions
- for running a local testnet. This guide is suitable for advanced users.
-See [docs/executables_and_runtimes.md](docs/executables_and_runtimes.md).
+    pushd "examples/${CRATE_NAME}"
+    RUSTFLAGS="--remap-path-prefix=$(pwd)= --remap-path-prefix=${HOME}=~" \
+        cargo +nightly build \
+            -Z build-std=core,alloc \
+            --target $(polkatool get-target-json-path --bitness 32) \
+            -q --release --bin "${CRATE_NAME}" -p "${CRATE_NAME}"
+    popd
 
-## Compiling Smart Contracts for PolkaVM
-
-1. Install `polkatool`
-
-```bash
-cargo install --git https://github.com/paritytech/polkavm.git --tag v0.21.0 polkatool
-```
-
-2. Build smart-contract `examples/hello-qf-polkavm`
-
-```bash
-export CRATE_NAME=hello-qf-polkavm
-mkdir -p output
-
-pushd "examples/${CRATE_NAME}"
-RUSTFLAGS="--remap-path-prefix=$(pwd)= --remap-path-prefix=${HOME}=~" \
-    cargo +nightly build \
-        -Z build-std=core,alloc \
-        --target $(polkatool get-target-json-path --bitness 32) \
-        -q --release --bin "${CRATE_NAME}" -p "${CRATE_NAME}"
-popd
-
-polkatool link \
-    --run-only-if-newer \
-    -s "examples/${CRATE_NAME}/target/riscv32emac-unknown-none-polkavm/release/${CRATE_NAME}" \
-    -o "output/${CRATE_NAME}.polkavm"
-```
+    polkatool link \
+        --run-only-if-newer \
+        -s "examples/${CRATE_NAME}/target/riscv32emac-unknown-none-polkavm/release/${CRATE_NAME}" \
+        -o "output/${CRATE_NAME}.polkavm"
+    ```
 
 ## Contributing
 
@@ -75,6 +61,3 @@ By contributing, you agree to adhere to our [Contributor Covenant Code of Conduc
 a respectful and inclusive environment.
 
 We appreciate your support and look forward to your contributions! 🚀
-
-[^1]: <https://forum.polkadot.network/t/announcing-polkavm-a-new-risc-v-based-vm-for-smart-contracts-and-possibly-more/3811#the-compilation-pipeline-7> "The compilation pipeline".
-[^2]: <https://github.com/paritytech/polkadot-sdk/tree/master/substrate/bin/utils/chain-spec-builder> "chain-spec-builder".
