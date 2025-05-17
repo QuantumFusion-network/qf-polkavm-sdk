@@ -1,8 +1,6 @@
 <div align="center">
 
-![Logo](Logo.jpg)
-
-# Quantum Fusion
+# QF Network PolkaVM SDK
 
 [![License](https://img.shields.io/github/license/QuantumFusion-network/qf-solochain?color=green)](https://github.com/QuantumFusion-network/qf-polkavm-sdk/blob/main/LICENSE)
 <br>
@@ -14,15 +12,13 @@
 
 </div>
 
+This framework enables the development of smart contracts for the Quantum Fusion Network. For the smart contract platform implementation details, please refer to the [PolkaVM pallet documentation](https://github.com/QuantumFusion-network/spec/blob/main/docs/PolkaVM/polkavm_pallet.md).
+
 For contributing to this project, please read [Contributing](#contributing) section.
 
-# QF PolkaVM SDK
+## Compiling example Smart Contract
 
-This framework allows to implement contracts for Quantum Fusion Network.
-
-For getting more technical information please follow to this [link](https://github.com/QuantumFusion-network/spec/blob/main/docs/PolkaVM/polkavm_pallet.md).
-
-## Compiling Smart Contracts for PolkaVM
+The QF Network executes smart contracts in the PolkaVM virtual machine and requires PolkaVM tools for smart contracts compilation.
 
 1. Install `polkatool`.
 
