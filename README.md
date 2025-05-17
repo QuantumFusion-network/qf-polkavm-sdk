@@ -22,37 +22,33 @@ This framework allows to implement contracts for Quantum Fusion Network.
 
 For getting more technical information please follow to this [link](https://github.com/QuantumFusion-network/spec/blob/main/docs/PolkaVM/polkavm_pallet.md).
 
-## Run examples
-
-To run examples or other smart contracts first need to have install [qf-solochain](https://github.com/QuantumFusion-network/qf-solochain) or via [portal](http://portal.qfnetwork.xyz/).
-
 ## Compiling Smart Contracts for PolkaVM
 
-1. Install `polkatool`
+1. Install `polkatool`.
 
-```bash
-cargo install --git https://github.com/paritytech/polkavm.git --tag v0.21.0 polkatool
-```
+    ```bash
+    cargo install --git https://github.com/paritytech/polkavm.git --tag v0.21.0 polkatool
+    ```
 
-2. Build smart-contract `examples/hello-qf-polkavm`
+1. Build smart-contract `examples/hello-qf-polkavm`.
 
-```bash
-export CRATE_NAME=hello-qf-polkavm
-mkdir -p output
+    ```bash
+    export CRATE_NAME=hello-qf-polkavm
+    mkdir -p output
 
-pushd "examples/${CRATE_NAME}"
-RUSTFLAGS="--remap-path-prefix=$(pwd)= --remap-path-prefix=${HOME}=~" \
-    cargo +nightly build \
-        -Z build-std=core,alloc \
-        --target $(polkatool get-target-json-path --bitness 32) \
-        -q --release --bin "${CRATE_NAME}" -p "${CRATE_NAME}"
-popd
+    pushd "examples/${CRATE_NAME}"
+    RUSTFLAGS="--remap-path-prefix=$(pwd)= --remap-path-prefix=${HOME}=~" \
+        cargo +nightly build \
+            -Z build-std=core,alloc \
+            --target $(polkatool get-target-json-path --bitness 32) \
+            -q --release --bin "${CRATE_NAME}" -p "${CRATE_NAME}"
+    popd
 
-polkatool link \
-    --run-only-if-newer \
-    -s "examples/${CRATE_NAME}/target/riscv32emac-unknown-none-polkavm/release/${CRATE_NAME}" \
-    -o "output/${CRATE_NAME}.polkavm"
-```
+    polkatool link \
+        --run-only-if-newer \
+        -s "examples/${CRATE_NAME}/target/riscv32emac-unknown-none-polkavm/release/${CRATE_NAME}" \
+        -o "output/${CRATE_NAME}.polkavm"
+    ```
 
 ## Contributing
 
