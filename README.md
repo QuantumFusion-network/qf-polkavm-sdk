@@ -46,6 +46,10 @@ The QF Network executes smart contracts in the PolkaVM virtual machine and requi
         -o "output/${CRATE_NAME}.polkavm"
     ```
 
+## Deploy and call a smart contract
+
+See [guides.md](guides.md).
+
 ## Contributing
 
 We welcome contributions of all kinds! Whether you're reporting or fixing a bug, adding a feature, or improving
