@@ -1,43 +1,47 @@
 #![no_std]
 #![no_main]
-/// This macro includes a bump allocator and imports of PolkaVM host-functions:
-/// 1. `balance() -> u64` returns Balance of smart-contract address.
+
+/// This macro includes a bump allocator and imports PolkaVM host functions:
+/// 
+/// 1. `balance() -> u64`
+/// Returns the balance of the smart contract's address.
 ///
-/// 2. `balance_of() -> u64` returns of some address.
+/// 2. `balance_of() -> u64`
+/// Returns the balance of a specified address.
 ///
-/// 3. `transfer(address_idx: u32, balance_idx: u32) -> u64` gets:
-/// - `address_idx` is index in `addresses`.
-/// - `balance_idx` is index in `balances`.
-/// This function does transfer from smart-contract address to some address, returns 0 if transfer is
-/// successful.
+/// 3. `transfer(address_idx: u32, balance_idx: u32) -> u64`
+///   - `address_idx`: Index in the `addresses` array.
+///   - `balance_idx`: Index in the `balances` array.
+/// Transfers balance from the smart contract's address to the specified address. Returns 0 if successful.
 ///
-/// 4. `block_number() -> u64` returns block number.
+/// 4. `block_number() -> u64`
+/// Returns the current block number.
 ///
-/// 5. `account_id() -> u64` returns index of smart-contract address in `addresses`.
+/// 5. `account_id() -> u64`
+/// Returns the index of the smart contract's address in the `addresses` array.
 ///
-/// 6. `caller() -> u64` returns index of caller address in `addresses`.
+/// 6. `caller() -> u64`
+/// Returns the index of the caller's address in the `addresses` array.
 ///
-/// 7. `get_user_data(pointer: u32) -> u64` gets:
-/// - `pointer` is pointer to `user_data`.
-/// This function puts `user_user` data by the `pointer` and returns 0 if there are not errors.
+/// 7. `get_user_data(pointer: u32) -> u64`
+///   - `pointer`: Pointer to the user_data buffer.
 ///
-/// 8. `get(storage_key_pointer: u32, pointer: u32) -> u64` gets:
-/// - `storage_key_pointer` is a pointer to some key in storage.
-/// - `pointer` is a pointer to some buffer where data will be stored.
-/// This function reads data from storage by the pointer of key (`storage_key_pointer`) and
-/// stores it by `pointer`, returns 0 if there are not errors.
+/// Writes `user_data` to the specified pointer. Returns 0 if successful.
 ///
-/// 9. `set(storage_key_pointer: u32, pointer: u32) -> u64` gets:
-/// - `storage_key_pointer` is a pointer to some key in storage.
-/// - `pointer` is a pointer to some buffer with data.
-/// This function writes data from `pointer` to storage by the pointer of key
-/// (`storage_key_pointer`), returns 0 if there are not errors.
+/// 8. `get(storage_key_pointer: u32, pointer: u32) -> u64`
+///   - `storage_key_pointer`: Pointer to a storage key.
+///   - `pointer`: Pointer to a buffer where the data will be stored.
+/// Reads data from storage using the key at `storage_key_pointer` and stores it at pointer. Returns 0 if successful.
 ///
-/// 10. `delete(storage_key_pointer: u32) -> u64` gets:
-/// - `storage_key_pointer` is pointer to some key in storage.
-/// This function delete date from storage by pointer `storage_key_pointer`, 
-/// returns 0 if there are not errors.
-///
+/// 9. `set(storage_key_pointer: u32, pointer: u32) -> u64`
+///   - `storage_key_pointer`: Pointer to a storage key.
+///   - `pointer`: Pointer to the data buffer.
+/// Writes data from pointer to storage using the key at `storage_key_pointer`. Returns 0 if successful.
+/// 
+/// 10. `delete(storage_key_pointer: u32) -> u64`
+///   - `storage_key_pointer`: Pointer to a storage key.
+/// Deletes data from storage using the specified key. Returns 0 if successful.
+/// 
 /// [Instruction to compile a smart-contract](https://github.com/QuantumFusion-network/qf-polkavm-sdk/?tab=readme-ov-file#compiling-example-smart-contract)
 ///
 #[macro_export]
@@ -174,42 +178,42 @@ macro_rules! host_functions {
         /// Host-functions available to call inside a smart-contract.
         #[polkavm_derive::polkavm_import]
         extern "C" {
-            /// Balance of smart-contract address.
+            /// Returns the balance of the smart contract’s address. 
             fn balance() -> u64;
 
-            /// Balance of some address.
+            /// Returns the balance of a specified address.
             fn balance_of() -> u64;
 
-            /// Transfer from smart-contract address to some address.
-            /// - `address_idx` is index in addresses.
-            /// - `balance_idx` is index in balances.
+            /// Transfers balance from the smart contract's address to the specified address. Returns 0 if successful.
+            ///   - `address_idx`: Index in the `addresses` array.
+            ///   - `balance_idx`: Index in the `balances` array.
             fn transfer(address_idx: u32, balance_idx: u32) -> u64;
 
-            /// Block number.
+            /// Returns the current block number.
             fn block_number() -> u64;
 
-            /// Smart-contract address.
+            /// Returns the index of the smart contract’s address in the addresses array.
             fn account_id() -> u64;
 
-            /// Caller address.
+            /// Returns the index of the caller’s address in the addresses array.
             fn caller() -> u64;
 
-            /// Get user_data.
-            /// `pointer` is pointer to `user_data`.
+            /// Writes `user_data` to the specified pointer. Returns 0 if successful.
+            ///   - `pointer`: Pointer to the user_data buffer.
             fn get_user_data(pointer: u32) -> u64;
 
-            /// Get data from storage.
-            /// - `storage_key_pointer` is a pointer to some key in storage.
-            /// - `pointer` is a pointer to some buffer where data will be stored.
+            /// Reads data from storage using the key at `storage_key_pointer` and stores it at pointer. Returns 0 if successful.
+            ///   - `storage_key_pointer`: Pointer to a storage key.
+            ///   - `pointer`: Pointer to a buffer where the data will be stored.
             fn get(storage_key_pointer: u32, pointer: u32) -> u64;
 
-            /// Set data to storage.
-            /// - `storage_key_pointer` is a pointer to some key in storage.
-            /// - `pointer` is a pointer to some buffer with data.
+            /// Writes data from pointer to storage using the key at `storage_key_pointer`. Returns 0 if successful.
+            ///   - `storage_key_pointer`: Pointer to a storage key.
+            ///   - `pointer`: Pointer to the data buffer.
             fn set(storage_key_pointer: u32, pointer: u32) -> u64;
 
-            /// Delete data from storage.
-            /// - `storage_key_pointer` is pointer to some key in storage.
+            /// Deletes data from storage using the specified key. Returns 0 if successful.
+            ///   - `storage_key_pointer`: Pointer to a storage key.
             fn delete(storage_key_pointer: u32) -> u64;
         }
     };
