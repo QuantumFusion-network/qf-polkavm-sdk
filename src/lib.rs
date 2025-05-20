@@ -1,6 +1,45 @@
 #![no_std]
 #![no_main]
-
+/// This macro includes a bump allocator and imports of PolkaVM host-functions:
+/// 1. `balance() -> u64` returns Balance of smart-contract address.
+///
+/// 2. `balance_of() -> u64` returns of some address.
+///
+/// 3. `transfer(address_idx: u32, balance_idx: u32) -> u64` gets:
+/// - `address_idx` is index in `addresses`.
+/// - `balance_idx` is index in `balances`.
+/// This function does transfer from smart-contract address to some address, returns 0 if transfer is
+/// successful.
+///
+/// 4. `block_number() -> u64` returns block number.
+///
+/// 5. `account_id() -> u64` returns index of smart-contract address in `addresses`.
+///
+/// 6. `caller() -> u64` returns index of caller address in `addresses`.
+///
+/// 7. `get_user_data(pointer: u32) -> u64` gets:
+/// - `pointer` is pointer to `user_data`.
+/// This function puts `user_user` data by the `pointer` and returns 0 if there are not errors.
+///
+/// 8. `get(storage_key_pointer: u32, pointer: u32) -> u64` gets:
+/// - `storage_key_pointer` is a pointer to some key in storage.
+/// - `pointer` is a pointer to some buffer where data will be stored.
+/// This function reads data from storage by the pointer of key (`storage_key_pointer`) and
+/// stores it by `pointer`, returns 0 if there are not errors.
+///
+/// 9. `set(storage_key_pointer: u32, pointer: u32) -> u64` gets:
+/// - `storage_key_pointer` is a pointer to some key in storage.
+/// - `pointer` is a pointer to some buffer with data.
+/// This function writes data from `pointer` to storage by the pointer of key
+/// (`storage_key_pointer`), returns 0 if there are not errors.
+///
+/// 10. `delete(storage_key_pointer: u32) -> u64` gets:
+/// - `storage_key_pointer` is pointer to some key in storage.
+/// This function delete date from storage by pointer `storage_key_pointer`, 
+/// returns 0 if there are not errors.
+///
+/// [Instruction to compile a smart-contract](https://github.com/QuantumFusion-network/qf-polkavm-sdk/?tab=readme-ov-file#compiling-example-smart-contract)
+///
 #[macro_export]
 macro_rules! host_functions {
     () => {
@@ -132,18 +171,45 @@ macro_rules! host_functions {
             }
         }
 
+        /// Host-functions available to call inside a smart-contract.
         #[polkavm_derive::polkavm_import]
         extern "C" {
+            /// Balance of smart-contract address.
             fn balance() -> u64;
+
+            /// Balance of some address.
             fn balance_of() -> u64;
-            fn print() -> u64;
+
+            /// Transfer from smart-contract address to some address.
+            /// - `address_idx` is index in addresses.
+            /// - `balance_idx` is index in balances.
             fn transfer(address_idx: u32, balance_idx: u32) -> u64;
+
+            /// Block number.
             fn block_number() -> u64;
+
+            /// Smart-contract address.
             fn account_id() -> u64;
+
+            /// Caller address.
             fn caller() -> u64;
+
+            /// Get user_data.
+            /// `pointer` is pointer to `user_data`.
             fn get_user_data(pointer: u32) -> u64;
+
+            /// Get data from storage.
+            /// - `storage_key_pointer` is a pointer to some key in storage.
+            /// - `pointer` is a pointer to some buffer where data will be stored.
             fn get(storage_key_pointer: u32, pointer: u32) -> u64;
-            fn set(storage_key_pointer: u32, buffer: u32) -> u64;
+
+            /// Set data to storage.
+            /// - `storage_key_pointer` is a pointer to some key in storage.
+            /// - `pointer` is a pointer to some buffer with data.
+            fn set(storage_key_pointer: u32, pointer: u32) -> u64;
+
+            /// Delete data from storage.
+            /// - `storage_key_pointer` is pointer to some key in storage.
             fn delete(storage_key_pointer: u32) -> u64;
         }
     };
