@@ -2,7 +2,7 @@
 #![no_main]
 
 /// This macro includes a bump allocator and imports PolkaVM host functions:
-/// 
+///
 /// 1. `balance() -> u64`
 /// Returns the balance of the smart contract's address.
 ///
@@ -37,11 +37,11 @@
 ///   - `storage_key_pointer`: Pointer to a storage key.
 ///   - `pointer`: Pointer to the data buffer.
 /// Writes data from pointer to storage using the key at `storage_key_pointer`. Returns 0 if successful.
-/// 
+///
 /// 10. `delete(storage_key_pointer: u32) -> u64`
 ///   - `storage_key_pointer`: Pointer to a storage key.
 /// Deletes data from storage using the specified key. Returns 0 if successful.
-/// 
+///
 /// [Instruction to compile a smart-contract](https://github.com/QuantumFusion-network/qf-polkavm-sdk/?tab=readme-ov-file#compiling-example-smart-contract)
 ///
 #[macro_export]
@@ -178,7 +178,7 @@ macro_rules! host_functions {
         /// Host-functions available to call inside a smart-contract.
         #[polkavm_derive::polkavm_import]
         extern "C" {
-            /// Returns the balance of the smart contract’s address. 
+            /// Returns the balance of the smart contract’s address.
             fn balance() -> u64;
 
             /// Returns the balance of a specified address.
