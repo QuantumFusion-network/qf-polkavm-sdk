@@ -3,7 +3,7 @@
 version = 4
 
 [[package]]
-name = "get-block-number"
+name = "get-transaction-caller"
 version = "0.1.0"
 dependencies = [
  "polkavm-derive",
@@ -55,7 +55,6 @@ dependencies = [
 [[package]]
 name = "qf-polkavm-sdk"
 version = "0.1.0"
-source = "git+https://github.com/QuantumFusion-network/qf-polkavm-sdk#8b3fe3af048600a0f7461f89492bd522364f69bc"
 
 [[package]]
 name = "quote"

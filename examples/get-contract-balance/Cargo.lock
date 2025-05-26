@@ -3,6 +3,14 @@
 version = 4
 
 [[package]]
+name = "get-contract-balance"
+version = "0.1.0"
+dependencies = [
+ "polkavm-derive",
+ "qf-polkavm-sdk",
+]
+
+[[package]]
 name = "polkavm-common"
 version = "0.21.0"
 source = "git+https://github.com/paritytech/polkavm.git?tag=v0.21.0#78eab63bdf85ced46598e34d9c396e6d59b591e1"
@@ -36,14 +44,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "print-message"
-version = "0.1.0"
-dependencies = [
- "polkavm-derive",
- "qf-polkavm-sdk",
-]
-
-[[package]]
 name = "proc-macro2"
 version = "1.0.94"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -55,6 +55,7 @@ dependencies = [
 [[package]]
 name = "qf-polkavm-sdk"
 version = "0.1.0"
+source = "git+https://github.com/QuantumFusion-network/qf-polkavm-sdk#8b3fe3af048600a0f7461f89492bd522364f69bc"
 
 [[package]]
 name = "quote"
