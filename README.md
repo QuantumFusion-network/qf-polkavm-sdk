@@ -29,6 +29,11 @@ The QF Network executes smart contracts in the PolkaVM virtual machine and requi
 1. Build smart-contract `examples/hello-qf-polkavm`.
 
     ```bash
+    ./build_polkavm.sh hello-qf-polkavm
+    ```
+    
+    Or compile manually:
+    ```bash
     export CRATE_NAME=hello-qf-polkavm
     mkdir -p output
 
@@ -48,7 +53,14 @@ The QF Network executes smart contracts in the PolkaVM virtual machine and requi
 
 ## Deploy and call a smart contract
 
-See [guides.md](guides.md).
+```bash
+./build_polkavm.sh increment-counter
+
+cd cli
+npx ts-node uploadAndExecute.ts wss://test.qfnetwork.xyz ../output/increment-counter.polkavm
+```
+
+See [guides.md](guides.md) for detailed explaination.
 
 ## Contributing
 
