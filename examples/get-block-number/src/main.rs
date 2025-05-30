@@ -1,3 +1,6 @@
+//! Example of getting current block number.
+//! Returns number in return code
+
 #![no_std]
 #![no_main]
 

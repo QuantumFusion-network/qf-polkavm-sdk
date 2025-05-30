@@ -1,3 +1,6 @@
+//! Example of getting current smart contract balance.
+//! Returns number of tokens into result code.
+
 #![no_std]
 #![no_main]
 

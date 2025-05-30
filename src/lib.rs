@@ -1,6 +1,7 @@
 #![no_std]
 #![no_main]
 
+/// Declare host functions for smart ocntract to call external logic in runtime
 #[macro_export]
 macro_rules! host_functions {
     () => {
@@ -8,8 +9,10 @@ macro_rules! host_functions {
 
         static mut INNER: Option<InnerAlloc> = None;
 
+        /// Memory heap
         static mut HEAP: [u8; 1024 * 1024] = [0; 1024 * 1024];
 
+        /// Simple bump allocator. Never deallocate memory
         #[global_allocator]
         static ALLOCATOR: BumpAllocator = BumpAllocator {};
 
@@ -141,6 +144,9 @@ macro_rules! host_functions {
             fn block_number() -> u64;
             fn account_id() -> u64;
             fn caller() -> u64;
+            fn storage_size() -> u64;
+            fn get_address_len(address_idx: u32) -> u64;
+            fn get_address(address_idx: u32, write_pointer: u32) -> u64;
             fn get_user_data(pointer: u32) -> u64;
             fn get(storage_key_pointer: u32, pointer: u32) -> u64;
             fn set(storage_key_pointer: u32, buffer: u32) -> u64;

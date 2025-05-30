@@ -1,3 +1,6 @@
+//! Example for getting balance of specified account
+//! Gets balance of address from `to` argument. Returns in output code number.
+
 #![no_std]
 #![no_main]
 

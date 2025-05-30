@@ -1,3 +1,5 @@
+//! Example smart contract for printing strings into runtime logs
+
 #![no_std]
 #![no_main]
 
@@ -8,9 +10,7 @@ extern "C" fn main() -> u64 {
     call_print("hello!")
 }
 
+/// Prints string into runtine logs
 fn call_print(msg: &str) -> u64 {
-    let msg_pointer: *const u8 = msg.as_ptr();
-    let len = msg.len();
-
-    unsafe { print(msg_pointer as u32, len as u32) }
+    unsafe { print(msg.as_ptr() as u32, msg.len() as u32) }
 }
