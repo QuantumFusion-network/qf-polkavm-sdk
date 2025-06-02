@@ -11,36 +11,52 @@
 /// 2. `balance_of() -> u64`
 /// Returns the balance of a specified address.
 ///
-/// 3. `transfer(address_idx: u32, balance_idx: u32) -> u64`
+/// 3. `print(msg_pointer: u32, len: u32) -> u64`
+///   - `msg_pointer`: Pointer to the message buffer.
+///   - `len`: Length of the message.
+/// Prints a message to the runtime logs.
+///
+/// 4. `transfer(address_idx: u32, balance_idx: u32) -> u64`
 ///   - `address_idx`: Index in the `addresses` array.
 ///   - `balance_idx`: Index in the `balances` array.
 /// Transfers balance from the smart contract's address to the specified address. Returns 0 on success.
 ///
-/// 4. `block_number() -> u64`
+/// 5. `block_number() -> u64`
 /// Returns the current block number.
 ///
-/// 5. `account_id() -> u64`
+/// 6. `account_id() -> u64`
 /// Returns the index of the smart contract's address in the `addresses` array.
 ///
-/// 6. `caller() -> u64`
+/// 7. `caller() -> u64`
 /// Returns the index of the caller's address in the `addresses` array.
 ///
-/// 7. `get_user_data(pointer: u32) -> u64`
-///   - `pointer`: Pointer to the user_data buffer.
+/// 8. `storage_size() -> u64`
+/// Returns the size of the storage.
 ///
+/// 9. `get_address_len(address_idx: u32) -> u64`
+///   - `address_idx`: Index in the `addresses` array.
+/// Returns the length of the address at the specified index.
+///
+/// 10. `get_address(address_idx: u32, write_pointer: u32) -> u64`
+///   - `address_idx`: Index in the `addresses` array.
+///   - `write_pointer`: Pointer to write the address to.
+/// Retrieves the address at the specified index and writes it to the given pointer.
+///
+/// 11. `get_user_data(pointer: u32) -> u64`
+///   - `pointer`: Pointer to the user_data buffer.
 /// Writes `user_data` to the specified pointer. Returns 0 on success.
 ///
-/// 8. `get(storage_key_pointer: u32, pointer: u32) -> u64`
+/// 12. `get(storage_key_pointer: u32, pointer: u32) -> u64`
 ///   - `storage_key_pointer`: Pointer to a storage key.
 ///   - `pointer`: Pointer to a buffer where the data will be stored.
 /// Reads data from storage using the key at `storage_key_pointer` and stores it at pointer. Returns 0 on success.
 ///
-/// 9. `set(storage_key_pointer: u32, pointer: u32) -> u64`
+/// 13. `set(storage_key_pointer: u32, pointer: u32) -> u64`
 ///   - `storage_key_pointer`: Pointer to a storage key.
 ///   - `pointer`: Pointer to the data buffer.
 /// Writes data from pointer to storage using the key at `storage_key_pointer`. Returns 0 on success.
 ///
-/// 10. `delete(storage_key_pointer: u32) -> u64`
+/// 14. `delete(storage_key_pointer: u32) -> u64`
 ///   - `storage_key_pointer`: Pointer to a storage key.
 /// Deletes data from storage using the specified key. Returns 0 on success.
 ///
@@ -182,12 +198,15 @@ macro_rules! host_functions {
         /// Host-functions available to call inside a smart-contract.
         #[polkavm_derive::polkavm_import]
         extern "C" {
-            /// Returns the balance of the smart contract’s address.
+            /// Returns the balance of the smart contract's address.
             fn balance() -> u64;
 
             /// Returns the balance of a specified address.
             fn balance_of() -> u64;
 
+            /// Prints a message to the runtime logs.
+            ///   - `msg_pointer`: Pointer to the message buffer.
+            ///   - `len`: Length of the message.
             fn print(msg_pointer: u32, len: u32) -> u64;
 
             /// Transfers balance from the smart contract's address to the specified address. Returns 0 on success.
@@ -198,16 +217,22 @@ macro_rules! host_functions {
             /// Returns the current block number.
             fn block_number() -> u64;
 
-            /// Returns the index of the smart contract’s address in the addresses array.
+            /// Returns the index of the smart contract's address in the addresses array.
             fn account_id() -> u64;
 
-            /// Returns the index of the caller’s address in the addresses array.
+            /// Returns the index of the caller's address in the addresses array.
             fn caller() -> u64;
 
+            /// Returns the size of the storage.
             fn storage_size() -> u64;
 
+            /// Returns the length of the address at the specified index.
+            ///   - `address_idx`: Index in the `addresses` array.
             fn get_address_len(address_idx: u32) -> u64;
 
+            /// Retrieves the address at the specified index and writes it to the given pointer.
+            ///   - `address_idx`: Index in the `addresses` array.
+            ///   - `write_pointer`: Pointer to write the address to.
             fn get_address(address_idx: u32, write_pointer: u32) -> u64;
 
             /// Writes `user_data` to the specified pointer. Returns 0 on success.
