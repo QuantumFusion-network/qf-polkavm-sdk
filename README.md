@@ -31,7 +31,7 @@ The QF Network executes smart contracts in the PolkaVM virtual machine and requi
     ```bash
     ./build_polkavm.sh hello-qf-polkavm
     ```
-    
+
     Or compile manually:
     ```bash
     export CRATE_NAME=hello-qf-polkavm
@@ -55,12 +55,15 @@ The QF Network executes smart contracts in the PolkaVM virtual machine and requi
 
 ```bash
 ./build_polkavm.sh increment-counter
-
-cd cli
-npx ts-node uploadAndExecute.ts wss://test.qfnetwork.xyz ../output/increment-counter.polkavm
 ```
 
-See [guides.md](guides.md) for detailed explaination.
+See [guides.md](guides.md) for explaination on how to deploy smart contract on a [QF Network Portal](https://portal.qfnetwork.xyz/).
+
+To run tests on a [local network](https://github.com/QuantumFusion-network/qf-solochain/blob/main/zombienet/README.md) run:
+```bash
+cd cli
+npx ts-node uploadAndExecute.ts wss://localhost:<LOCAL_PORT> ../output/increment-counter.polkavm
+```
 
 ## Contributing
 
