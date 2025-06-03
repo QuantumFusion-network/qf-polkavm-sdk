@@ -66,7 +66,7 @@ const Faucet = () => {
   useEffect(() => {
 
 
-    connectApi();
+    connectApi(RPC_URL);
 
     return () => {
       if (api) {
@@ -93,6 +93,16 @@ const Faucet = () => {
           <h3 className="font-semibold mb-2 text-xl">Network Information</h3>
           <div className="text-sm">
             <p><strong>RPC Endpoint:</strong> {rpc}</p>
+          </div>
+
+          <input ref={rpcRef} placeholder={rpc} className="mt-4 w-full py-2 px-3 border rounded-lg" type="text"/>
+          <button
+            className="mt-2 flex items-center justify-center py-2 px-3 font-karla font-semibold rounded-md transition-colors duration-200 p-3 text-[#fff] hover:bg-[#00c2489c] bg-[#00c248c9]"
+            onClick={onSetRpc}>
+            Submit
+          </button>
+          <div className="mt-4">
+            <Logs logs={logs}/>
           </div>
         </div>
       </div>
@@ -146,7 +156,7 @@ const Faucet = () => {
       </div>
 
 
-      <div className="h-[1px] bg-[#DCDCDC] mt-8 w-[90%] mx-auto"></div>
+      <div className="h-[1px] bg-[#DCDCDC] mt-8 w-[90%] mx-auto"/>
       <div className="mt-8 p-5 relative z-[1] bg-white max-w-2xl mx-auto rounded-2xl border border-black">
         <h3 className="font-semibold mb-2 text-xl">Network Information</h3>
         <div className="text-sm">

@@ -4,60 +4,6 @@ import {Logs} from "./Logs.jsx";
 import {useState} from "react";
 import {hexToU8a, isHex, u8aToHex, u8aToString} from "@polkadot/util";
 
-const BYTE_STR_0 = '0'.charCodeAt(0);
-const BYTE_STR_X = 'x'.charCodeAt(0);
-const STR_NL = '\n';
-const NOOP = () => undefined;
-
-function convertResult(result) {
-  const data = new Uint8Array(result);
-
-  if (data[0] === BYTE_STR_0 && data[1] === BYTE_STR_X) {
-    let hex = u8aToString(data);
-
-    while (hex.endsWith(STR_NL)) {
-      hex = hex.substring(0, hex.length - 1);
-    }
-
-    if (isHex(hex)) {
-      return hexToU8a(hex);
-    }
-  }
-
-  return data;
-}
-
-function extract(isCall, extrinsic, payload) {
-  if (!extrinsic) {
-    return ['0x', '0x', null];
-  }
-
-  const u8a = extrinsic.method.toU8a();
-  let inspect = isCall
-    ? extrinsic.method.inspect()
-    : extrinsic.inspect();
-
-  if (payload) {
-    const prev = inspect;
-
-    inspect = payload.inspect();
-    inspect.inner?.map((entry, index) => {
-      if (index === 0) {
-        // replace the method inner
-        entry.inner = prev.inner;
-        entry.outer = undefined;
-      }
-
-      return entry;
-    });
-  }
-
-  return [
-    u8aToHex(u8a),
-    extrinsic.registry.hash(u8a).toHex(),
-    inspect
-  ];
-}
 
 export const ContractStep = ({api, account, injector, setContractAddress, setContractMethods}) => {
 
