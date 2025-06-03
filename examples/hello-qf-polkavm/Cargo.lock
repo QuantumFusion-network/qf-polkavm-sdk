@@ -162,7 +162,6 @@ dependencies = [
 [[package]]
 name = "qf-polkavm-sdk"
 version = "0.1.0"
-source = "git+https://github.com/QuantumFusion-network/qf-polkavm-sdk#2f43067d922878d07bf9f12112054a62ff205144"
 
 [[package]]
 name = "quote"
