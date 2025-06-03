@@ -34,7 +34,13 @@ extern "C" fn main() -> u64 {
         return err;
     }
 
-    let increment = u32::from_le_bytes(buffer[..4].try_into().unwrap());
+    let increment = match u32::decode(&mut &buffer[..]) {
+        Ok(value) => value,
+        Err(err) => {
+            call_print(&format!("decoding failed: {err:?}"));
+            return 1;
+        }
+    };
 
     call_increment(increment)
 }
