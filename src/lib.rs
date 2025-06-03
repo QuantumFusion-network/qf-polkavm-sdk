@@ -195,7 +195,7 @@ macro_rules! host_functions {
             }
         }
 
-        /// Host-functions available to call inside a smart-contract.
+        // Host-functions available to call inside a smart-contract.
         #[polkavm_derive::polkavm_import]
         extern "C" {
             /// Returns the balance of the smart contract's address.
