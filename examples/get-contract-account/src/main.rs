@@ -15,7 +15,10 @@ qf_polkavm_sdk::host_functions!();
 
 #[polkavm_derive::polkavm_export]
 extern "C" fn main() -> u64 {
-    let scale_bytes = get_contract_address();
+    let scale_bytes = match get_contract_address() {
+        Ok(bytes) => bytes,
+        Err(err) => return err,
+    };
 
     let account_id = AccountId32::decode(&mut &scale_bytes[..]).unwrap();
     let ss58_address = account_id.to_ss58check();
@@ -24,7 +27,7 @@ extern "C" fn main() -> u64 {
 
 /// Get address of current contract.
 /// Loads bytes from account_id() index in accounts vector.
-fn get_contract_address() -> Vec<u8> {
+fn get_contract_address() -> Result<Vec<u8>, u64> {
     // Get contract index
     let id = unsafe { account_id() } as u32;
 
@@ -36,11 +39,12 @@ fn get_contract_address() -> Vec<u8> {
     address_buffer.resize(len, 0);
 
     // Call host function to load encoded address
-    if unsafe { get_address(id, address_buffer.as_mut_ptr() as u32) } != 0 {
-        panic!();
+    let status_code = unsafe { get_address(id, address_buffer.as_mut_ptr() as u32) };
+    if status_code != 0 {
+        return Err(status_code);
     }
 
-    address_buffer
+    Ok(address_buffer)
 }
 
 /// Prints string into runtine logs
