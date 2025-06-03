@@ -23,12 +23,6 @@ export default function AppRouter() {
 // gas price
 // one more
 
-// 2 case:
-// адрес смарта
-// hex строку
-// gas limit
-// gas price
-// one more
 
   const {
     selectedNode
