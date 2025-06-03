@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
+
 # Check if a crate name was provided
 if [ $# -eq 0 ]; then
     echo "Error: No crate name provided."
     echo "Usage: $0 <crate_name>"
-    echo "Crates: $(ls examples)"
+    echo "Crates: $(find examples -maxdepth 1 -type d ! -path examples | xargs basename -a)"
     exit 1
 fi
 
