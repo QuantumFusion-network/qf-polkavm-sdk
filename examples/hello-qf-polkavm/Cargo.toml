@@ -7,5 +7,4 @@ publish = false
 [dependencies]
 parity-scale-codec = { version = "3.7.4", default-features = false, features = [ "derive" ]}
 polkavm-derive = { git = "https://github.com/paritytech/polkavm.git", tag = "v0.21.0" }
-qf-polkavm-sdk = { git = "https://github.com/QuantumFusion-network/qf-polkavm-sdk", ref = "a0f7e7728da711ce9d5249a7801298c3638dde95" }
-
+qf-polkavm-sdk = { path = "../../" }
