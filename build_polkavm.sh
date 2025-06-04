@@ -25,7 +25,7 @@ RUSTFLAGS="--remap-path-prefix=$(pwd)= --remap-path-prefix=${HOME}=~" \
     cargo +nightly build \
         -Z build-std=core,alloc \
         --target $(polkatool get-target-json-path --bitness 32) \
-        -q --release --bin "${CRATE_NAME}" -p "${CRATE_NAME}"
+        --release
 popd > /dev/null
 
 polkatool link \
