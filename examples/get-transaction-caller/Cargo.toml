@@ -1,10 +1,11 @@
 [package]
-name = "hello-qf-polkavm"
+name = "get-transaction-caller"
 version = "0.1.0"
 edition = "2021"
 publish = false
 
 [dependencies]
-parity-scale-codec = { version = "3.7.4", default-features = false, features = [ "derive" ]}
 polkavm-derive = { git = "https://github.com/paritytech/polkavm.git", tag = "v0.21.0" }
 qf-polkavm-sdk = { path = "../../" }
+sp-core = { version = "36.1.0", default-features = false, features = ["serde"] }
+codec = { version = "3.6.12", default-features = false, package = "parity-scale-codec" }
