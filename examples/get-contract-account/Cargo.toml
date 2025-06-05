@@ -5,7 +5,7 @@ edition = "2021"
 publish = false
 
 [dependencies]
-polkavm-derive = { git = "https://github.com/paritytech/polkavm.git", tag = "v0.21.0" }
-qf-polkavm-sdk = { path = "../../" }
-sp-core = { version = "36.1.0", default-features = false, features = ["serde"] }
-codec = { version = "3.6.12", default-features = false, package = "parity-scale-codec" }
+polkavm-derive = { workspace = true }
+qf-polkavm-sdk = { workspace = true }
+sp-core = { workspace = true }
+codec = { workspace = true }

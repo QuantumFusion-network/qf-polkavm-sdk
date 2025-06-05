@@ -5,5 +5,5 @@ edition = "2021"
 publish = false
 
 [dependencies]
-polkavm-derive = { git = "https://github.com/paritytech/polkavm.git", tag = "v0.21.0" }
-qf-polkavm-sdk = { path = "../../" }
+polkavm-derive = { workspace = true }
+qf-polkavm-sdk = { workspace = true }
