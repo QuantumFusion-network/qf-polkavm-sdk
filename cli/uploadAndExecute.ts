@@ -203,6 +203,11 @@ async function main() {
     const userData4 = "0x" + Buffer.from(move.toU8a()).toString("hex");
     await execute(userData4);
 
+    // Third execute
+    const state2 = api.createType("ChessCommand", { GetGameState: 1n });
+    const userData5 = "0x" + Buffer.from(state2.toU8a()).toString("hex");
+    await execute(userData5);
+
     // Disconnect from the node
     await api.disconnect();
 }

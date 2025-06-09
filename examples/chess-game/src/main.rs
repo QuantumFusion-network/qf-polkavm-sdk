@@ -13,12 +13,7 @@
 
 extern crate alloc;
 
-use alloc::{
-    format,
-    string::{String, ToString},
-    vec::Vec,
-};
-use core::str::FromStr;
+use alloc::{format, string::String, vec::Vec};
 use parity_scale_codec::{Decode, Encode};
 use sp_core::crypto::{AccountId32, Ss58Codec};
 
@@ -100,7 +95,7 @@ impl Square {
 }
 
 /// Chess move
-#[derive(Encode, Decode, Clone, Debug)]
+#[derive(Encode, Decode, Clone, Copy, Debug)]
 pub struct Move {
     pub from: Square,
     pub to: Square,
@@ -108,7 +103,7 @@ pub struct Move {
 }
 
 /// Chess board state
-#[derive(Encode, Decode, Clone, Debug)]
+#[derive(Encode, Decode, Clone, Copy, Debug)]
 pub struct Board {
     pub squares: [[Option<Piece>; 8]; 8],
     pub to_move: Color,
@@ -118,7 +113,7 @@ pub struct Board {
     pub fullmove_number: u16,
 }
 
-#[derive(Encode, Decode, Clone, Debug)]
+#[derive(Encode, Decode, Clone, Copy, Debug)]
 pub struct CastlingRights {
     pub white_kingside: bool,
     pub white_queenside: bool,
@@ -178,73 +173,82 @@ impl Board {
     }
 
     fn setup_initial_position(&mut self) {
-        // White pieces (rank 0)
+        // White pieces on rank 1 (index 0)
         self.squares[0][0] = Some(Piece {
             piece_type: PieceType::Rook,
             color: Color::White,
         });
-        self.squares[1][0] = Some(Piece {
+        self.squares[0][1] = Some(Piece {
             piece_type: PieceType::Knight,
             color: Color::White,
         });
-        self.squares[2][0] = Some(Piece {
+        self.squares[0][2] = Some(Piece {
             piece_type: PieceType::Bishop,
             color: Color::White,
         });
-        self.squares[3][0] = Some(Piece {
+        self.squares[0][3] = Some(Piece {
             piece_type: PieceType::Queen,
             color: Color::White,
         });
-        self.squares[4][0] = Some(Piece {
+        self.squares[0][4] = Some(Piece {
             piece_type: PieceType::King,
             color: Color::White,
         });
-        self.squares[5][0] = Some(Piece {
+        self.squares[0][5] = Some(Piece {
             piece_type: PieceType::Bishop,
             color: Color::White,
         });
-        self.squares[6][0] = Some(Piece {
+        self.squares[0][6] = Some(Piece {
             piece_type: PieceType::Knight,
             color: Color::White,
         });
-        self.squares[7][0] = Some(Piece {
+        self.squares[0][7] = Some(Piece {
             piece_type: PieceType::Rook,
             color: Color::White,
         });
 
-        for i in 0..8 {
-            self.squares[i][1] = Some(Piece {
+        // White pawns on rank 2 (index 1)
+        for file in 0..8 {
+            self.squares[1][file] = Some(Piece {
                 piece_type: PieceType::Pawn,
                 color: Color::White,
             });
         }
 
-        // Black pieces
-        self.squares[0][7] = Some(Piece {
+        // Black pawns on rank 7 (index 6)
+        for file in 0..8 {
+            self.squares[6][file] = Some(Piece {
+                piece_type: PieceType::Pawn,
+                color: Color::Black,
+            });
+        }
+
+        // Black pieces on rank 8 (index 7)
+        self.squares[7][0] = Some(Piece {
             piece_type: PieceType::Rook,
             color: Color::Black,
         });
-        self.squares[1][7] = Some(Piece {
+        self.squares[7][1] = Some(Piece {
             piece_type: PieceType::Knight,
             color: Color::Black,
         });
-        self.squares[2][7] = Some(Piece {
+        self.squares[7][2] = Some(Piece {
             piece_type: PieceType::Bishop,
             color: Color::Black,
         });
-        self.squares[3][7] = Some(Piece {
+        self.squares[7][3] = Some(Piece {
             piece_type: PieceType::Queen,
             color: Color::Black,
         });
-        self.squares[4][7] = Some(Piece {
+        self.squares[7][4] = Some(Piece {
             piece_type: PieceType::King,
             color: Color::Black,
         });
-        self.squares[5][7] = Some(Piece {
+        self.squares[7][5] = Some(Piece {
             piece_type: PieceType::Bishop,
             color: Color::Black,
         });
-        self.squares[6][7] = Some(Piece {
+        self.squares[7][6] = Some(Piece {
             piece_type: PieceType::Knight,
             color: Color::Black,
         });
@@ -252,21 +256,14 @@ impl Board {
             piece_type: PieceType::Rook,
             color: Color::Black,
         });
-
-        for i in 0..8 {
-            self.squares[i][6] = Some(Piece {
-                piece_type: PieceType::Pawn,
-                color: Color::Black,
-            });
-        }
     }
 
     pub fn get_piece(&self, square: Square) -> Option<Piece> {
-        self.squares[square.file as usize][square.rank as usize]
+        self.squares[square.rank as usize][square.file as usize]
     }
 
     pub fn set_piece(&mut self, square: Square, piece: Option<Piece>) {
-        self.squares[square.file as usize][square.rank as usize] = piece;
+        self.squares[square.rank as usize][square.file as usize] = piece;
     }
 
     pub fn is_valid_move(&self, mv: &Move) -> bool {
@@ -430,9 +427,9 @@ impl Board {
     }
 
     pub fn find_king(&self, color: Color) -> Option<Square> {
-        for file in 0..8 {
-            for rank in 0..8 {
-                if let Some(piece) = self.squares[file][rank] {
+        for rank in 0..8 {
+            for file in 0..8 {
+                if let Some(piece) = self.squares[rank][file] {
                     if piece.piece_type == PieceType::King && piece.color == color {
                         return Square::new(file as u8, rank as u8);
                     }
@@ -445,9 +442,9 @@ impl Board {
     pub fn is_in_check(&self, color: Color) -> bool {
         if let Some(king_square) = self.find_king(color) {
             // Check if any opponent piece can attack the king
-            for file in 0..8 {
-                for rank in 0..8 {
-                    if let Some(piece) = self.squares[file][rank] {
+            for rank in 0..8 {
+                for file in 0..8 {
+                    if let Some(piece) = self.squares[rank][file] {
                         if piece.color != color {
                             let from = Square::new(file as u8, rank as u8).unwrap();
                             let test_move = Move {
@@ -457,8 +454,7 @@ impl Board {
                             };
 
                             // Temporarily change turn to test if move is valid
-                            let original_turn = self.to_move;
-                            let mut temp_board = self.clone();
+                            let mut temp_board = *self;
                             temp_board.to_move = piece.color;
 
                             if temp_board.is_valid_move(&test_move) {
@@ -473,14 +469,14 @@ impl Board {
     }
 
     pub fn has_legal_moves(&self, color: Color) -> bool {
-        for from_file in 0..8 {
-            for from_rank in 0..8 {
-                if let Some(piece) = self.squares[from_file][from_rank] {
+        for from_rank in 0..8 {
+            for from_file in 0..8 {
+                if let Some(piece) = self.squares[from_rank][from_file] {
                     if piece.color == color {
                         let from = Square::new(from_file as u8, from_rank as u8).unwrap();
 
-                        for to_file in 0..8 {
-                            for to_rank in 0..8 {
+                        for to_rank in 0..8 {
+                            for to_file in 0..8 {
                                 let to = Square::new(to_file as u8, to_rank as u8).unwrap();
                                 let test_move = Move {
                                     from,
@@ -489,10 +485,9 @@ impl Board {
                                 };
 
                                 if self.is_valid_move(&test_move) {
-                                    // Test if move leaves king in check
-                                    let mut temp_board = self.clone();
+                                    // Test if this move leaves king in check
+                                    let mut temp_board = *self;
                                     temp_board.make_move(&test_move);
-
                                     if !temp_board.is_in_check(color) {
                                         return true;
                                     }
@@ -518,9 +513,9 @@ impl Board {
         let mut piece_count = 0;
         let mut has_major_piece = false;
 
-        for file in 0..8 {
-            for rank in 0..8 {
-                if let Some(piece) = self.squares[file][rank] {
+        for rank in 0..8 {
+            for file in 0..8 {
+                if let Some(piece) = self.squares[rank][file] {
                     piece_count += 1;
                     match piece.piece_type {
                         PieceType::Queen | PieceType::Rook | PieceType::Pawn => {
