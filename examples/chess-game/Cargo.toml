@@ -1,0 +1,18 @@
+[package]
+name = "chess-game"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+parity-scale-codec = { workspace = true }
+polkavm-derive = { workspace = true }
+qf-polkavm-sdk = { workspace = true }
+sp-core = { workspace = true }
+
+[profile.release]
+opt-level = "z"      # size-optimized
+lto = true           # link-time optimization
+codegen-units = 1    # aggressive inlining/elimination
+strip = true         # removes symbol/data debris
+panic = "abort"      # cuts panic handling bloat

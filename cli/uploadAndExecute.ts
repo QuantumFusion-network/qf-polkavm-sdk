@@ -1,5 +1,6 @@
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import { Keyring } from "@polkadot/keyring";
+import { KeyringPair } from "@polkadot/keyring/types";
 import { u64, Option, u32, i64 } from "@polkadot/types";
 import { Codec } from "@polkadot/types/types";
 import fs from "fs";
@@ -11,9 +12,9 @@ function buf2hex(buffer: Uint8Array) {
 }
 
 async function main() {
-    // Retrieve the WS endpoint from command-line arguments
-    const wsEndpoint = process.argv[2] || "wss://test.qfnetwork.xyz";
-    const programPath = process.argv[3];
+    // Retrieve the smart conatract and WS endpoint from command-line arguments
+    const programPath = process.argv[2];
+    const wsEndpoint = process.argv[3] || "ws://127.0.0.1:9944";
 
     if (!fs.existsSync(programPath)) {
         console.error(`Program file not found: ${programPath}`);
@@ -25,11 +26,32 @@ async function main() {
     const api = await ApiPromise.create({
         provider: wsProvider,
         noInitWarn: true,
+        types: {
+            MakeMove: {
+                game_id: "u64",
+                from_square: "String",
+                to_square: "String",
+                promotion: "Option<String>",
+            },
+            ChessCommand: {
+                _enum: {
+                    CreateGame: null,
+                    JoinGame: "u64",
+                    MakeMove: "MakeMove",
+                    GetGameState: "u64",
+                    GetPlayerGames: null,
+                },
+            },
+        },
     });
 
     // Initialize keyring and add Alice account
     const keyring = new Keyring({ type: "sr25519" });
     const ALICE = keyring.addFromUri("//Alice");
+    const BOB = keyring.addFromUri("//Bob");
+
+    console.log(`Caller 0 address: ${ALICE.address}`);
+    console.log(`Caller 1 address: ${BOB.address}`);
 
     // Prepare program data
     const fileBuffer = fs.readFileSync(programPath);
@@ -89,16 +111,10 @@ async function main() {
     const to = ALICE.address;
     const value = 10;
 
-    // Data to pass to smart contract
-    const n = 42;
-    const u32Value = api.createType("u32", n);
-    const userDataRaw = u32Value.toU8a();
-    const userData = "0x" + Buffer.from(userDataRaw).toString("hex");
-
     const gasLimit = 2000000;
     const gasPrice = 10;
 
-    const execute = async () => {
+    const execute = async (userData: string, caller: KeyringPair = ALICE) => {
         const executeExtrinsic = api.tx.qfPolkaVM.execute(
             contractAddress,
             to,
@@ -113,7 +129,7 @@ async function main() {
 
         const executionData: Codec[] = await new Promise((resolve, reject) => {
             executeExtrinsic
-                .signAndSend(ALICE, ({ events = [], status }) => {
+                .signAndSend(caller, ({ events = [], status }) => {
                     events.forEach(({ event: { data, method, section } }) => {
                         if (
                             section === "qfPolkaVM" &&
@@ -154,11 +170,38 @@ async function main() {
         );
     };
 
+    // Data to pass to smart contract
+    // const n = 42;
+    // const u32Value = api.createType("u32", n);
+    // const userDataRaw = u32Value.toU8a();
+    // const userData = "0x" + Buffer.from(userDataRaw).toString("hex");
+
     // First execute
-    await execute();
+    const c1 = api.createType("ChessCommand", "CreateGame");
+    const userData1 = "0x" + Buffer.from(c1.toU8a()).toString("hex");
+    await execute(userData1);
 
     // Second execute
-    await execute();
+    const join = api.createType("ChessCommand", { JoinGame: 1n });
+    const userData2 = "0x" + Buffer.from(join.toU8a()).toString("hex");
+    await execute(userData2, BOB);
+
+    // Third execute
+    const state = api.createType("ChessCommand", { GetGameState: 1n });
+    const userData3 = "0x" + Buffer.from(state.toU8a()).toString("hex");
+    await execute(userData3);
+
+    // MakeMove variant with nested fields
+    const move = api.createType("ChessCommand", {
+        MakeMove: {
+            game_id: 1n,
+            from_square: "e2",
+            to_square: "e4",
+            promotion: null, // could also be Option.Some('Q')
+        },
+    });
+    const userData4 = "0x" + Buffer.from(move.toU8a()).toString("hex");
+    await execute(userData4);
 
     // Disconnect from the node
     await api.disconnect();
