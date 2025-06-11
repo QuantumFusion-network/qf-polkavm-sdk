@@ -22,13 +22,20 @@ This initial prototype includes:
 
 From the project root:
 
-```bash
+```console
 ./build_polkavm.sh chess-game
 ```
 
 This will create `output/chess-game.polkavm` ready for deployment.
 
 ## Usage
+
+Run a local node and run:
+```console
+cd examples/chess-game/play-chess-cli/
+
+npx ts-node play_chess_cli.ts ../../../output/chess-game.polkavm ws://127.0.0.1:9944 /tmp/zombie-logs/alice.log
+```
 
 The contract accepts SCALE-encoded commands. Here are the available commands:
 
@@ -85,9 +92,7 @@ pub struct ChessGame {
     pub white_player: Option<u64>,  // Address index of white player
     pub black_player: Option<u64>,  // Address index of black player
     pub status: GameStatus,         // WaitingForPlayer, InProgress, etc.
-    pub current_turn: Color,        // White or Black
-    pub move_count: u32,
-    pub board: [[Option<Piece>; 8]; 8], // 8x8 chess board
+    pub board: Board,               // Current board state with move tracking
 }
 ```
 

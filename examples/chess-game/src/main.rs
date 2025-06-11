@@ -164,9 +164,13 @@ impl Board {
                     },
                     None => "·",
                 };
-                line.push_str(piece_char);
-                line.push(' ');
+                line.push_str(&format!("{} ", piece_char));
             }
+            // call_print(&format!(
+            //     "line_size: len:{} chars:{}",
+            //     line.len(),
+            //     line.chars().count(),
+            // ));
             call_print(&line);
         }
         call_print("");
@@ -664,6 +668,9 @@ impl ChessGame {
         }
 
         call_print(&format!("Move made: {} -> {}", from_square, to_square));
+
+        call_print("");
+        self.board.print_unicode();
 
         if self.status != GameStatus::InProgress {
             call_print(&format!("Game ended: {:?}", self.status));

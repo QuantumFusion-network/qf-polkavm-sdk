@@ -1,3 +1,4 @@
 target
 output
 cli/node_modules
+examples/chess-game/play-chess-cli/node_modules

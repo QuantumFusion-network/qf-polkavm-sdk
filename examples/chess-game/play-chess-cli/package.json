@@ -1,0 +1,21 @@
+{
+    "name": "play-chess-cli",
+    "version": "1.0.0",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "description": "",
+    "dependencies": {
+        "@polkadot/api": "^16.0.1",
+        "@polkadot/keyring": "^13.5.1"
+    },
+    "devDependencies": {
+        "concurrently": "^9.1.2",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.8.3"
+    }
+}
