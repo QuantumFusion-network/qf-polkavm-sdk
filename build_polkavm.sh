@@ -45,8 +45,8 @@ RUSTFLAGS="--remap-path-prefix=$(pwd)= --remap-path-prefix=${HOME}=~" \
 for crate in "${EXAMPLE_CRATES[@]}"; do
     echo "Linking ${crate}..."
     polkatool link \
-        --run-only-if-newer \
-        -s "target/riscv32emac-unknown-none-polkavm/release/${crate}" \
+        --strip --run-only-if-newer \
+        "target/riscv32emac-unknown-none-polkavm/release/${crate}" \
         -o "output/${crate}.polkavm"
 done
 

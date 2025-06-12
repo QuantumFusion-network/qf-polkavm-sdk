@@ -1,3 +1,4 @@
 target
 output
-cli/node_modules
+node_modules
+

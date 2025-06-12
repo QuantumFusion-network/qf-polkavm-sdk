@@ -11,11 +11,14 @@ members = [
     "examples/increment-counter",
     "examples/print-message",
     "examples/transfer-balance",
+    "examples/chess-game",
 ]
 
 [workspace.dependencies]
 qf-polkavm-sdk = { path = "qf-polkavm-sdk" }
-parity-scale-codec = { version = "3.7.4", default-features = false, features = ["derive"] }
+parity-scale-codec = { version = "3.7.4", default-features = false, features = [
+    "derive",
+] }
 polkavm-derive = { git = "https://github.com/paritytech/polkavm.git", tag = "v0.21.0" }
 sp-core = { version = "36.1.0", default-features = false, features = ["serde"] }
 codec = { version = "3.6.12", default-features = false, package = "parity-scale-codec" }

@@ -178,6 +178,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 
 [[package]]
+name = "chess-game"
+version = "0.1.0"
+dependencies = [
+ "parity-scale-codec",
+ "polkavm-derive 0.21.0",
+ "qf-polkavm-sdk",
+ "sp-core",
+]
+
+[[package]]
 name = "const-oid"
 version = "0.9.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
