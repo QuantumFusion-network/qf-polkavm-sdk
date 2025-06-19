@@ -77,6 +77,7 @@ macro_rules! host_functions {
         static mut HEAP: [u8; 1024 * 1024] = [0; 1024 * 1024];
 
         /// Simple bump allocator. Never deallocate memory
+        #[cfg(not(test))]
         #[global_allocator]
         static ALLOCATOR: BumpAllocator = BumpAllocator {};
 
@@ -192,6 +193,7 @@ macro_rules! host_functions {
             core::panic!("required_pages");
         }
 
+        #[cfg(not(test))]
         #[panic_handler]
         fn panic(info: &core::panic::PanicInfo) -> ! {
             use alloc::format;

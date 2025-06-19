@@ -8,8 +8,8 @@
 //!
 //! This is a minimal prototype focusing on game management basics.
 
-#![no_std]
-#![no_main]
+#![cfg_attr(not(test), no_std)]
+#![cfg_attr(not(test), no_main)]
 
 extern crate alloc;
 
@@ -219,6 +219,14 @@ pub fn get_caller_address() -> AccountId32 {
 }
 
 /// Print message to runtime logs
+#[cfg(not(test))]
 pub fn call_print(msg: &str) -> u64 {
     unsafe { print(msg.as_ptr() as u32, msg.len() as u32) }
+}
+
+/// Print message to test logs
+#[cfg(test)]
+pub fn call_print(msg: &str) -> u64 {
+    eprintln!("{msg}");
+    0
 }

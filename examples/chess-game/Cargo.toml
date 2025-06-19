@@ -10,9 +10,6 @@ polkavm-derive = { workspace = true }
 qf-polkavm-sdk = { workspace = true }
 sp-core = { workspace = true }
 
-[profile.release]
-opt-level = "z"      # size-optimized
-lto = true           # link-time optimization
-codegen-units = 1    # aggressive inlining/elimination
-strip = true         # removes symbol/data debris
-panic = "abort"      # cuts panic handling bloat
+[dev-dependencies]
+# For tests build with "std"
+sp-core = { workspace = true, default-features = false, features = ["std"] }

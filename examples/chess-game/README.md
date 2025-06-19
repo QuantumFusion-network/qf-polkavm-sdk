@@ -127,6 +127,11 @@ The board is represented as an 8x8 array where:
 
 ## Testing
 
+To run unit tests:
+```console
+cargo +nightly test --package chess-game
+```
+
 Deploy the contract and test the basic flow:
 
 1. Create a game and note the game ID returned
