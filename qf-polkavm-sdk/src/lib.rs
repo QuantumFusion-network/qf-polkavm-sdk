@@ -1,6 +1,10 @@
 #![no_std]
 #![no_main]
 
+extern crate alloc;
+
+pub mod safe_api;
+
 /// This macro includes a bump allocator and imports PolkaVM host functions into the code.
 ///
 /// List of Host Functions:
@@ -73,6 +77,7 @@ macro_rules! host_functions {
         static mut HEAP: [u8; 1024 * 1024] = [0; 1024 * 1024];
 
         /// Simple bump allocator. Never deallocate memory
+        #[cfg(not(test))]
         #[global_allocator]
         static ALLOCATOR: BumpAllocator = BumpAllocator {};
 
@@ -188,8 +193,24 @@ macro_rules! host_functions {
             core::panic!("required_pages");
         }
 
+        #[cfg(not(test))]
         #[panic_handler]
-        fn panic(_info: &core::panic::PanicInfo) -> ! {
+        fn panic(info: &core::panic::PanicInfo) -> ! {
+            use alloc::format;
+
+            let msg = match info.location() {
+                Some(location) => {
+                    format!(
+                        "panic: {} as {}:{}",
+                        info.message(),
+                        location.file(),
+                        location.line()
+                    )
+                }
+                None => format!("panic: {}", info.message()),
+            };
+            unsafe { print(msg.as_ptr() as u32, msg.len() as u32) };
+
             unsafe {
                 core::arch::asm!("unimp", options(noreturn));
             }

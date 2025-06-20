@@ -1,8 +1,10 @@
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import { Keyring } from "@polkadot/keyring";
+import { KeyringPair } from "@polkadot/keyring/types";
 import { u64, Option, u32, i64 } from "@polkadot/types";
 import { Codec } from "@polkadot/types/types";
 import fs from "fs";
+import { spawn, ChildProcess } from "child_process";
 
 function buf2hex(buffer: Uint8Array) {
     return [...new Uint8Array(buffer)]
@@ -10,26 +12,132 @@ function buf2hex(buffer: Uint8Array) {
         .join("");
 }
 
+async function sleep(ms: number) {
+    await new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 async function main() {
-    // Retrieve the WS endpoint from command-line arguments
-    const wsEndpoint = process.argv[2] || "wss://test.qfnetwork.xyz";
-    const programPath = process.argv[3];
+    // Show usage if no arguments provided
+    if (process.argv.length < 3) {
+        console.log(
+            "Usage: npx ts-node uploadAndExecute.ts <program-path> [ws-endpoint] [log-path]",
+        );
+        console.log("  program-path: Path to the .polkavm file");
+        console.log(
+            "  ws-endpoint:  WebSocket endpoint (default: ws://127.0.0.1:9944)",
+        );
+        console.log(
+            "  log-path:     Optional path to log file for tailing with polkavm grep",
+        );
+        console.log("");
+        console.log("Example:");
+        console.log(
+            "  npx ts-node uploadAndExecute.ts ../output/chess-game.polkavm",
+        );
+        console.log(
+            "  npx ts-node uploadAndExecute.ts ../output/chess-game.polkavm ws://127.0.0.1:9944 /tmp/zombie-logs/alice.log",
+        );
+        process.exit(1);
+    }
+
+    // Retrieve the smart contract, WS endpoint, and optional log path from command-line arguments
+    const programPath = process.argv[2];
+    const wsEndpoint = process.argv[3] || "ws://127.0.0.1:9944";
+    const logPath = process.argv[4]; // Optional log file path
 
     if (!fs.existsSync(programPath)) {
         console.error(`Program file not found: ${programPath}`);
         process.exit(1);
     }
 
+    // Start log tailing if log path is provided
+    let logTailProcess: ChildProcess | null = null;
+    let cleanupCalled = false;
+    let lastLogTime = Date.now();
+    if (logPath) {
+        if (!fs.existsSync(logPath)) {
+            console.warn(
+                `Log file not found: ${logPath}. Continuing without log tailing.`,
+            );
+        } else {
+            console.log(`Starting log tail for: ${logPath}`);
+            logTailProcess = spawn("tail", ["-f", logPath], { stdio: "pipe" });
+
+            if (logTailProcess.stdout) {
+                const grep = spawn("grep", ["polkavm"], {
+                    stdio: ["pipe", "pipe", "inherit"],
+                });
+
+                if (grep.stdout) {
+                    const sed = spawn("sed", ["s/.*polkavm:/polkavm:/"], {
+                        stdio: ["pipe", "pipe", "inherit"],
+                    });
+
+                    // Monitor log output to track when logs stop
+                    if (sed.stdout) {
+                        sed.stdout.on("data", () => {
+                            lastLogTime = Date.now();
+                        });
+                        sed.stdout.pipe(process.stdout);
+                    }
+
+                    grep.stdout.pipe(sed.stdin);
+                }
+
+                logTailProcess.stdout.pipe(grep.stdin);
+            }
+
+            logTailProcess.on("error", (err) => {
+                console.warn(`Log tailing error: ${err.message}`);
+            });
+        }
+    }
+
+    // Cleanup function to stop log tailing
+    const cleanup = () => {
+        if (logTailProcess && !cleanupCalled) {
+            cleanupCalled = true;
+            console.log("\nStopping log tail...");
+            logTailProcess.kill();
+        }
+    };
+
+    // Handle process termination
+    process.on("SIGINT", cleanup);
+    process.on("SIGTERM", cleanup);
+    process.on("exit", cleanup);
+
     // Connect to the node
     const wsProvider = new WsProvider(wsEndpoint);
     const api = await ApiPromise.create({
         provider: wsProvider,
         noInitWarn: true,
+        types: {
+            MakeMove: {
+                game_id: "u64",
+                from_square: "String",
+                to_square: "String",
+                promotion: "Option<String>",
+            },
+            ChessCommand: {
+                _enum: {
+                    CreateGame: null,
+                    JoinGame: "u64",
+                    MakeMove: "MakeMove",
+                    GetGameState: "u64",
+                    GetPlayerGames: null,
+                },
+            },
+        },
     });
 
     // Initialize keyring and add Alice account
     const keyring = new Keyring({ type: "sr25519" });
     const ALICE = keyring.addFromUri("//Alice");
+    const BOB = keyring.addFromUri("//Bob");
+
+    console.log(`Caller 0 address: ${ALICE.address}`);
+    console.log(`Caller 1 address: ${BOB.address}`);
 
     // Prepare program data
     const fileBuffer = fs.readFileSync(programPath);
@@ -89,16 +197,10 @@ async function main() {
     const to = ALICE.address;
     const value = 10;
 
-    // Data to pass to smart contract
-    const n = 42;
-    const u32Value = api.createType("u32", n);
-    const userDataRaw = u32Value.toU8a();
-    const userData = "0x" + Buffer.from(userDataRaw).toString("hex");
-
     const gasLimit = 2000000;
     const gasPrice = 10;
 
-    const execute = async () => {
+    const execute = async (userData: string, caller: KeyringPair = ALICE) => {
         const executeExtrinsic = api.tx.qfPolkaVM.execute(
             contractAddress,
             to,
@@ -113,7 +215,7 @@ async function main() {
 
         const executionData: Codec[] = await new Promise((resolve, reject) => {
             executeExtrinsic
-                .signAndSend(ALICE, ({ events = [], status }) => {
+                .signAndSend(caller, ({ events = [], status }) => {
                     events.forEach(({ event: { data, method, section } }) => {
                         if (
                             section === "qfPolkaVM" &&
@@ -154,14 +256,57 @@ async function main() {
         );
     };
 
+    // Data to pass to smart contract
+    // const n = 42;
+    // const u32Value = api.createType("u32", n);
+    // const userDataRaw = u32Value.toU8a();
+    // const userData = "0x" + Buffer.from(userDataRaw).toString("hex");
+
     // First execute
-    await execute();
+    const c1 = api.createType("ChessCommand", "CreateGame");
+    const userData1 = "0x" + Buffer.from(c1.toU8a()).toString("hex");
+    await execute(userData1);
 
     // Second execute
-    await execute();
+    const join = api.createType("ChessCommand", { JoinGame: 1n });
+    const userData2 = "0x" + Buffer.from(join.toU8a()).toString("hex");
+    await execute(userData2, BOB);
+
+    // Third execute
+    const state = api.createType("ChessCommand", { GetGameState: 1n });
+    const userData3 = "0x" + Buffer.from(state.toU8a()).toString("hex");
+    await execute(userData3);
+
+    // MakeMove variant with nested fields
+    const move = api.createType("ChessCommand", {
+        MakeMove: {
+            game_id: 1n,
+            from_square: "e2",
+            to_square: "e4",
+            promotion: null, // could also be Option.Some('Q')
+        },
+    });
+    const userData4 = "0x" + Buffer.from(move.toU8a()).toString("hex");
+    await execute(userData4);
+
+    // Third execute
+    const state2 = api.createType("ChessCommand", { GetGameState: 1n });
+    const userData5 = "0x" + Buffer.from(state2.toU8a()).toString("hex");
+    await execute(userData5);
 
     // Disconnect from the node
     await api.disconnect();
+
+    // Wait for logs to stop coming (no new logs for 2 seconds)
+    if (logTailProcess) {
+        console.log("Waiting for logs to complete...");
+        while (Date.now() - lastLogTime < 2000) {
+            await sleep(100);
+        }
+    }
+
+    // Clean shutdown
+    cleanup();
 }
 
 main().catch(console.error);
