@@ -2,6 +2,10 @@
 
 A simple chess game smart contract prototype built with the QF PolkaVM SDK.
 
+<p align="center">
+  <img src="./demo.gif" alt="Demo of the gameplay" width="600"/>
+</p>
+
 ## Features
 
 This initial prototype includes:
