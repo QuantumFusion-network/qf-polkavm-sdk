@@ -41,13 +41,13 @@ The QF Network executes smart contracts in the PolkaVM virtual machine and requi
     RUSTFLAGS="--remap-path-prefix=$(pwd)= --remap-path-prefix=${HOME}=~" \
         cargo +nightly build \
             -Z build-std=core,alloc \
-            --target $(polkatool get-target-json-path --bitness 32) \
+            --target $(polkatool get-target-json-path) \
             -q --release --bin "${CRATE_NAME}" -p "${CRATE_NAME}"
     popd
 
     polkatool link \
         --run-only-if-newer \
-        -s "examples/${CRATE_NAME}/target/riscv32emac-unknown-none-polkavm/release/${CRATE_NAME}" \
+        -s "examples/${CRATE_NAME}/target/riscv64emac-unknown-none-polkavm/release/${CRATE_NAME}" \
         -o "output/${CRATE_NAME}.polkavm"
     ```
 
