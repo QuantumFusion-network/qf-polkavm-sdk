@@ -1,5 +1,5 @@
 use alloc::{format, string::String};
-use parity_scale_codec::{Decode, Encode};
+use codec::{Decode, Encode};
 
 use crate::*;
 

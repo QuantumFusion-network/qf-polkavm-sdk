@@ -15,12 +15,10 @@ members = [
 ]
 
 [workspace.dependencies]
+codec = { version = "3.7.4", package = "parity-scale-codec", features = ["derive"], default-features = false }
+polkavm-derive = { git = "https://github.com/paritytech/polkavm.git", tag = "v0.21.0" }
+
 pallet-revive-uapi = { tag = "polkadot-stable2503-6", git = "https://github.com/paritytech/polkadot-sdk.git", default-features = false }
+sp-core = { version = "36.1.0", default-features = false, features = ["serde"] }
 
 qf-polkavm-sdk = { path = "qf-polkavm-sdk" }
-parity-scale-codec = { version = "3.7.4", default-features = false, features = [
-    "derive",
-] }
-polkavm-derive = { git = "https://github.com/paritytech/polkavm.git", tag = "v0.21.0" }
-sp-core = { version = "36.1.0", default-features = false, features = ["serde"] }
-codec = { version = "3.6.12", default-features = false, package = "parity-scale-codec" }

@@ -14,7 +14,7 @@
 extern crate alloc;
 
 use alloc::{format, string::String, vec::Vec};
-use parity_scale_codec::{Decode, Encode};
+use codec::{Decode, Encode};
 use sp_core::crypto::{AccountId32, Ss58Codec};
 
 pub mod board;
