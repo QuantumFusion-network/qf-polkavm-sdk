@@ -533,7 +533,7 @@ name = "chess-game"
 version = "0.1.0"
 dependencies = [
  "parity-scale-codec",
- "polkavm-derive 0.21.0",
+ "polkavm-derive 0.21.0 (git+https://github.com/paritytech/polkavm.git?tag=v0.21.0)",
  "qf-polkavm-sdk",
  "sp-core",
 ]
@@ -1028,7 +1028,7 @@ dependencies = [
 name = "get-account-balance"
 version = "0.1.0"
 dependencies = [
- "polkavm-derive 0.21.0",
+ "polkavm-derive 0.21.0 (git+https://github.com/paritytech/polkavm.git?tag=v0.21.0)",
  "qf-polkavm-sdk",
 ]
 
@@ -1036,7 +1036,7 @@ dependencies = [
 name = "get-block-number"
 version = "0.1.0"
 dependencies = [
- "polkavm-derive 0.21.0",
+ "polkavm-derive 0.21.0 (git+https://github.com/paritytech/polkavm.git?tag=v0.21.0)",
  "qf-polkavm-sdk",
 ]
 
@@ -1045,7 +1045,7 @@ name = "get-contract-account"
 version = "0.1.0"
 dependencies = [
  "parity-scale-codec",
- "polkavm-derive 0.21.0",
+ "polkavm-derive 0.21.0 (git+https://github.com/paritytech/polkavm.git?tag=v0.21.0)",
  "qf-polkavm-sdk",
  "sp-core",
 ]
@@ -1054,7 +1054,7 @@ dependencies = [
 name = "get-contract-balance"
 version = "0.1.0"
 dependencies = [
- "polkavm-derive 0.21.0",
+ "polkavm-derive 0.21.0 (git+https://github.com/paritytech/polkavm.git?tag=v0.21.0)",
  "qf-polkavm-sdk",
 ]
 
@@ -1063,7 +1063,7 @@ name = "get-transaction-caller"
 version = "0.1.0"
 dependencies = [
  "parity-scale-codec",
- "polkavm-derive 0.21.0",
+ "polkavm-derive 0.21.0 (git+https://github.com/paritytech/polkavm.git?tag=v0.21.0)",
  "qf-polkavm-sdk",
  "sp-core",
 ]
@@ -1148,7 +1148,7 @@ name = "hello-qf-polkavm"
 version = "0.1.0"
 dependencies = [
  "parity-scale-codec",
- "polkavm-derive 0.21.0",
+ "polkavm-derive 0.21.0 (git+https://github.com/paritytech/polkavm.git?tag=v0.21.0)",
  "qf-polkavm-sdk",
 ]
 
@@ -1223,8 +1223,9 @@ dependencies = [
 name = "increment-counter"
 version = "0.1.0"
 dependencies = [
+ "pallet-revive-uapi",
  "parity-scale-codec",
- "polkavm-derive 0.21.0",
+ "polkavm-derive 0.21.0 (git+https://github.com/paritytech/polkavm.git?tag=v0.21.0)",
  "qf-polkavm-sdk",
 ]
 
@@ -1487,6 +1488,26 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b15813163c1d831bf4a13c3610c05c0d03b39feb07f7e09fa234dac9b15aaf39"
 
 [[package]]
+name = "pallet-revive-proc-macro"
+version = "0.3.0"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?tag=polkadot-stable2503-6#598feddb893f5ad3923a62e41a2f179b6e10c30c"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.101",
+]
+
+[[package]]
+name = "pallet-revive-uapi"
+version = "0.4.0"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?tag=polkadot-stable2503-6#598feddb893f5ad3923a62e41a2f179b6e10c30c"
+dependencies = [
+ "bitflags 1.3.2",
+ "pallet-revive-proc-macro",
+ "polkavm-derive 0.21.0 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "parity-bip39"
 version = "2.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1609,6 +1630,12 @@ checksum = "31ff33982a807d8567645d4784b9b5d7ab87bcb494f534a57cadd9012688e102"
 [[package]]
 name = "polkavm-common"
 version = "0.21.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5c16b809cfd398f861261c045a8745e6c78b71ea7e0d3ef6f7cc553eb27bc17e"
+
+[[package]]
+name = "polkavm-common"
+version = "0.21.0"
 source = "git+https://github.com/paritytech/polkavm.git?tag=v0.21.0#78eab63bdf85ced46598e34d9c396e6d59b591e1"
 
 [[package]]
@@ -1623,9 +1650,18 @@ dependencies = [
 [[package]]
 name = "polkavm-derive"
 version = "0.21.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "47239245f87329541932c0d7fec750a66a75b13aa87dfe4fbfd637bab86ad387"
+dependencies = [
+ "polkavm-derive-impl-macro 0.21.0 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "polkavm-derive"
+version = "0.21.0"
 source = "git+https://github.com/paritytech/polkavm.git?tag=v0.21.0#78eab63bdf85ced46598e34d9c396e6d59b591e1"
 dependencies = [
- "polkavm-derive-impl-macro 0.21.0",
+ "polkavm-derive-impl-macro 0.21.0 (git+https://github.com/paritytech/polkavm.git?tag=v0.21.0)",
 ]
 
 [[package]]
@@ -1643,9 +1679,21 @@ dependencies = [
 [[package]]
 name = "polkavm-derive-impl"
 version = "0.21.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "24fd6c6215450c3e57511df5c38a82eb4bde208de15ee15046ac33852f3c3eaa"
+dependencies = [
+ "polkavm-common 0.21.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.101",
+]
+
+[[package]]
+name = "polkavm-derive-impl"
+version = "0.21.0"
 source = "git+https://github.com/paritytech/polkavm.git?tag=v0.21.0#78eab63bdf85ced46598e34d9c396e6d59b591e1"
 dependencies = [
- "polkavm-common 0.21.0",
+ "polkavm-common 0.21.0 (git+https://github.com/paritytech/polkavm.git?tag=v0.21.0)",
  "proc-macro2",
  "quote",
  "syn 2.0.101",
@@ -1664,9 +1712,19 @@ dependencies = [
 [[package]]
 name = "polkavm-derive-impl-macro"
 version = "0.21.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "36837f6b7edfd6f4498f8d25d81da16cf03bd6992c3e56f3d477dfc90f4fefca"
+dependencies = [
+ "polkavm-derive-impl 0.21.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "syn 2.0.101",
+]
+
+[[package]]
+name = "polkavm-derive-impl-macro"
+version = "0.21.0"
 source = "git+https://github.com/paritytech/polkavm.git?tag=v0.21.0#78eab63bdf85ced46598e34d9c396e6d59b591e1"
 dependencies = [
- "polkavm-derive-impl 0.21.0",
+ "polkavm-derive-impl 0.21.0 (git+https://github.com/paritytech/polkavm.git?tag=v0.21.0)",
  "syn 2.0.101",
 ]
 
@@ -1713,7 +1771,7 @@ dependencies = [
 name = "print-message"
 version = "0.1.0"
 dependencies = [
- "polkavm-derive 0.21.0",
+ "polkavm-derive 0.21.0 (git+https://github.com/paritytech/polkavm.git?tag=v0.21.0)",
  "qf-polkavm-sdk",
 ]
 
@@ -2516,7 +2574,7 @@ dependencies = [
 name = "transfer-balance"
 version = "0.1.0"
 dependencies = [
- "polkavm-derive 0.21.0",
+ "polkavm-derive 0.21.0 (git+https://github.com/paritytech/polkavm.git?tag=v0.21.0)",
  "qf-polkavm-sdk",
 ]
 
