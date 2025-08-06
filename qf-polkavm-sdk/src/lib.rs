@@ -3,8 +3,6 @@
 
 extern crate alloc;
 
-pub mod safe_api;
-
 /// This macro includes a bump allocator and imports PolkaVM host functions into the code.
 ///
 /// List of Host Functions:
