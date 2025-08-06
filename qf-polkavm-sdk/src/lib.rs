@@ -133,24 +133,11 @@ macro_rules! init {
 
         #[cfg(not(test))]
         #[panic_handler]
-        fn panic(info: &core::panic::PanicInfo) -> ! {
-            use alloc::format;
-
-            let msg = match info.location() {
-                Some(location) => {
-                    format!(
-                        "panic: {} as {}:{}",
-                        info.message(),
-                        location.file(),
-                        location.line()
-                    )
-                }
-                None => format!("panic: {}", info.message()),
-            };
-            unsafe { print(msg.as_ptr() as u32, msg.len() as u32) };
-
+        fn panic(_info: &core::panic::PanicInfo) -> ! {
+            // Safety: The unimp instruction is guaranteed to trap
             unsafe {
-                core::arch::asm!("unimp", options(noreturn));
+                core::arch::asm!("unimp");
+                core::hint::unreachable_unchecked();
             }
         }
     };
