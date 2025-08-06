@@ -9,117 +9,35 @@
 extern crate alloc;
 
 use alloc::format;
-
 use codec::{Decode, Encode};
+use pallet_revive_uapi::{input, unwrap_output, HostFn, HostFnImpl as api, StorageFlags};
+use qf_polkavm_sdk::init;
 
-qf_polkavm_sdk::host_functions!();
+init!();
 
-const STORAGE_KEY_LEN: usize = 256;
-type StorageKey = [u8; STORAGE_KEY_LEN];
-const READ_BUFFER_LEN: usize = 2048;
-type ReadBuffer = [u8; READ_BUFFER_LEN];
+const KEY: [u8; 32] = [1u8; 32];
 
-/// Counter stored in storage and incremented by smart contract
-/// by number provided from user
-#[derive(Encode, Decode, Default)]
-struct Counter {
-    counter: u32,
-}
-
+#[no_mangle]
 #[polkavm_derive::polkavm_export]
-extern "C" fn main() -> u64 {
-    let mut buffer = [0u8; READ_BUFFER_LEN];
-
-    if let Err(err) = get_input_data(&mut buffer) {
-        return err;
-    }
-
-    let increment = match u32::decode(&mut &buffer[..]) {
-        Ok(value) => value,
-        Err(err) => {
-            call_print(&format!("decoding failed: {err:?}"));
-            return 1;
-        }
-    };
-
-    call_increment(increment)
+pub extern "C" fn deploy() {
+    // Initialize storage counter with 0.
+    api::set_storage(StorageFlags::empty(), &KEY, &0u32.encode());
 }
 
-/// Get data pssed into smart contract call and save into buffer
-fn get_input_data(buffer: &mut ReadBuffer) -> Result<(), u64> {
-    let pointer: *mut ReadBuffer = buffer;
+#[no_mangle]
+#[polkavm_derive::polkavm_export]
+pub extern "C" fn call() {
+    // Accept increment value from user input. Should be 4 bytes (e.g., `0x12345678`) or `ContractTrapped` error occurs.
+    input!(increment: u32, );
 
-    match unsafe { get_user_data(pointer as u32) } {
-        0 => Ok(()),
-        err => Err(err),
-    }
-}
+    // Read the current value from storage.
+    unwrap_output!(raw, [0u8; 4], api::get_storage, StorageFlags::empty(), &KEY);
+    let old = u32::decode(&mut &raw[..]).unwrap();
 
-/// Increment counter by specified `increment` number
-fn call_increment(increment: u32) -> u64 {
-    // string representation of the key used to store the counter value
-    // "                                                                                                                                                                                                                                                             foo"
+    // Increment the value and write it back to storage.
+    let (new, _) = old.overflowing_add(increment);
+    api::set_storage(StorageFlags::empty(), &KEY, &new.encode());
 
-    // hex representation of the key used to store the counter value
-    // "0x20202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020666F6F"
-
-    // binary representation of the key used to store the counter value
-    let storage_key: StorageKey = [
-        32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
-        32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
-        32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
-        32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
-        32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
-        32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
-        32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
-        32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
-        32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
-        32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
-        32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
-        102, 111, 111,
-    ];
-    let mut buffer = [0u8; READ_BUFFER_LEN];
-
-    unsafe {
-        // Read from storage
-        match get(storage_key.as_ptr() as u32, buffer.as_mut_ptr() as u32) {
-            0 => (),
-            err => return err,
-        }
-
-        // Decode counter structure
-        let mut counter = if buffer == [0u8; READ_BUFFER_LEN] {
-            // Default value if zero
-            Counter::default()
-        } else {
-            Counter::decode(&mut &buffer[..]).unwrap_or(Counter::default())
-        };
-
-        // Increment by value
-        let new_value = counter.counter.saturating_add(increment);
-        call_print(&format!(
-            "incrementing counter: {} + {} -> {}",
-            counter.counter, increment, new_value
-        ));
-        counter.counter = new_value;
-
-        // Encode counter structure
-        buffer.fill(0);
-        for (pos, elem) in Counter::encode(&counter).iter().enumerate() {
-            buffer[pos] = *elem
-        }
-
-        // Write to storage
-        match set(storage_key.as_ptr() as u32, buffer.as_mut_ptr() as u32) {
-            0 => (),
-            err => return err,
-        }
-    }
-
-    0
-}
-
-/// Prints string into runtine logs
-fn call_print(msg: &str) -> u64 {
-    unsafe { print(msg.as_ptr() as u32, msg.len() as u32) }
+    // Emit the update event with the old and new values.
+    api::deposit_event(&[], format!("Counter updated from {} to {}.", old, new).as_bytes());
 }

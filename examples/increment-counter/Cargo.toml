@@ -8,4 +8,5 @@ publish = false
 codec = { workspace = true }
 
 polkavm-derive = { workspace = true }
+pallet-revive-uapi = { workspace = true }
 qf-polkavm-sdk = { workspace = true }
