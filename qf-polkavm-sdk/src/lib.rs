@@ -5,7 +5,7 @@ extern crate alloc;
 
 /// This macro includes a bump allocator and panic handler.
 #[macro_export]
-macro_rules! host_functions {
+macro_rules! init {
     () => {
         use core::alloc::{GlobalAlloc, Layout};
 
