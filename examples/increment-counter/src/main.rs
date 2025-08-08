@@ -11,9 +11,9 @@ extern crate alloc;
 use alloc::format;
 use codec::{Decode, Encode};
 use pallet_revive_uapi::{input, unwrap_output, HostFn, HostFnImpl as api, StorageFlags};
-use qf_polkavm_sdk::init;
 
-init!();
+#[allow(unused_imports)]
+use qf_polkavm_sdk;
 
 const KEY: [u8; 32] = [1u8; 32];
 
