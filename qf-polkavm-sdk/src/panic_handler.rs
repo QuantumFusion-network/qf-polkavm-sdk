@@ -1,5 +1,4 @@
-#[cfg(not(test))]
-#[cfg_attr(all(feature = "panic-handler", not(test)), panic_handler)]
+#[panic_handler]
 fn panic(_info: &core::panic::PanicInfo) -> ! {
     // Safety: The unimp instruction is guaranteed to trap
     unsafe {

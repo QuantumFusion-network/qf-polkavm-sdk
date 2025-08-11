@@ -6,8 +6,7 @@ static mut INNER: Option<InnerAlloc> = None;
 static mut HEAP: [u8; 1024 * 1024] = [0; 1024 * 1024];
 
 /// Simple bump allocator. Never deallocates memory.
-#[cfg(not(test))]
-#[cfg_attr(all(feature = "global-allocator", not(test)), global_allocator)]
+#[global_allocator]
 static ALLOCATOR: BumpAllocator = BumpAllocator {};
 
 pub struct BumpAllocator;
