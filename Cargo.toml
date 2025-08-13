@@ -2,7 +2,6 @@
 resolver = "2"
 members = [
     "qf-polkavm-sdk",
-    "examples/get-contract-account",
     "examples/get-contract-balance",
     "examples/get-transaction-caller",
     "examples/hello-qf-polkavm",
