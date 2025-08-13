@@ -1,9 +1,0 @@
-[package]
-name = "get-contract-balance"
-version = "0.1.0"
-edition = "2021"
-publish = false
-
-[dependencies]
-polkavm-derive = { workspace = true }
-qf-polkavm-sdk = { workspace = true }
