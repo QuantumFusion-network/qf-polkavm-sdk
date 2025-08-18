@@ -1,26 +1,54 @@
-// Script to call the 'upload' and 'execute' extrinsics from the qfPolkaVm pallet
-// and handle events. You could paste that script to https://portal.qfnetwork.xyz/#/js
+/*
+ * Script for calling a smart contract. You could paste that it to https://portal.qfnetwork.xyz/#/js.
+ */
 
-// Use ALICE as the transaction sender
-const ALICE = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY';
+// 1. Configure smart contract call.
 
-// Prepare program data for upload
-// 'get-account-balance.polkavm'
-// python3 -c "print(', '.join(f'0x{b:02X}' for b in open('output/get-account-balance.polkavm', 'rb').read()))"
-const programData = new Uint8Array([
-  0x50, 0x56, 0x4D, 0x00, 0x01, 0x42, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x04, 0x00, 0x00, 0xA0, 0x00, 0x04, 0x0F, 0x01, 0x00, 0x00, 0x00, 0x00, 0x62, 0x61, 0x6C, 0x61, 0x6E, 0x63, 0x65, 0x5F, 0x6F, 0x66, 0x05, 0x07, 0x01, 0x00, 0x04, 0x6D, 0x61, 0x69, 0x6E, 0x06, 0x12, 0x00, 0x00, 0x0D, 0x83, 0x11, 0xFC, 0x7A, 0x10, 0x0A, 0x81, 0x10, 0x83, 0x11, 0x04, 0x32, 0x00, 0x69, 0x09, 0x00
-]);
+// Chain configuration.
+const DECIMALS = Math.pow(10, 18);
+const WEIGHT = Math.pow(10, 9)
 
-// Extrinsic execute parameters
-const to = ALICE;
-const value = 10;
-const userData = '0x00';
-const gasLimit = 10000;
-const gasPrice = 10;
+// Call origin. Make sure you have this account connected from the wallet.
+const SENDER = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY'; // Alice
 
-const contractFundAmount = '1000000000000000000';
+// Call arguments.
+const args = {
+  dest: '0x2c6fc00458f198f46ef072e1516b83cd56db7cf5', // smart contract address
+  value: 1 * DECIMALS, // amount to send with the call
+  gasLimit: {
+    refTime: 1 * WEIGHT, // gas limit ref time
+    proofSize: 1 * WEIGHT, // gas limit proof size
+  },
+  storageDepositLimit: 1 * DECIMALS, // storage deposit limit
+  data: '0xffffff00', // SCALE-encoded smart contract function arguments
+};
 
-console.log(`Prepared program blob of size ${programData.length} bytes`);
+// 2. Main execution flow.
+console.log('Checking if account is mapped...');
+const mappedAddress = await findMappedAccount();
+
+if (mappedAddress) {
+  console.log(`Account already mapped. Ethereum address: ${mappedAddress}`);
+} else {
+  console.log('Account not found in mapping entries');
+  await mapAccount();
+
+  const newMappedAddress = await findMappedAccount();
+  if (newMappedAddress) {
+    console.log(`Account mapped successfully. Ethereum address: ${newMappedAddress}`);
+  } else {
+    console.log('Account mapping may have failed - account not found in entries');
+  }
+}
+
+// Execute the smart contract call.
+const blockHash = await executeCall();
+console.log('Contract execution completed successfully');
+console.log(`blockHash: ${blockHash}`)
+
+/*
+ * Helpers.
+ */
 
 function buf2hex(buffer) { // buffer is an ArrayBuffer
   return [...new Uint8Array(buffer)]
@@ -28,100 +56,60 @@ function buf2hex(buffer) { // buffer is an ArrayBuffer
     .join('');
 }
 
-// Create the 'upload' extrinsic from the qfPolkaVm pallet with the programBlob argument
-const uploadExtrinsic = api.tx.qfPolkaVM.upload('0x' + buf2hex(programData));
-console.log(`Extrinsic created: ${uploadExtrinsic.method.section}.${uploadExtrinsic.method.method}`);
+async function findMappedAccount() {
+  const allOriginalAccounts = await api.query.revive.originalAccount.entries();
 
-// Sign and send the transaction
-const contractAddressPromise = new Promise(async (resolve) => {
-  const unsubscribeUploadExtrinsic = await uploadExtrinsic.signAndSend(ALICE, ({ events = [], status }) => {
-    // Handle events
-    events.forEach(({ phase, event: { data, method, section } }) => {
-      // Specifically handle the ProgramBlobUploaded event
-      if (section === 'qfPolkaVM' && method === 'ProgramBlobUploaded') {
-        const contractAddress = data[1].toString();
+  for (const [key, value] of allOriginalAccounts) {
+    const substrateAccount = value.toString();
+    if (substrateAccount === SENDER) {
+      const ethereumAddressBytes = key.args[0];
+      const ethereumAddress = `0x${buf2hex(ethereumAddressBytes.toU8a())}`;
+      return ethereumAddress;
+    }
+  }
+  return null;
+}
 
-        unsubscribeUploadExtrinsic();
-        resolve(contractAddress);
-      }
-    });
-  });
-});
-console.log('Transaction sent. Waiting for processing...');
-const contractAddress = await contractAddressPromise;
-console.log('Program uploaded successfully!');
-console.log(`Contract address: ${contractAddress}`);
+async function mapAccount() {
+  const mapAccountTx = api.tx.revive.mapAccount();
 
-// Fund smart contract account
-const transfer = api.tx.balances.transferAllowDeath(contractAddress, contractFundAmount);
-const transferPromise = new Promise(async (resolve) => {
-  const unsubscribeTransfer = await transfer.signAndSend(ALICE, ({ events = [], status }) => {
-    events.forEach(({ phase, event: { data, method, section } }) => {
-      if (section === 'balances' && method === 'Transfer') {
-        unsubscribeTransfer();
+  return new Promise((resolve, reject) => {
+    const unsubscribe = mapAccountTx.signAndSend(SENDER, (result) => {
+      if (result.status.isFinalized) {
+        unsubscribe();
         resolve();
+      } else if (result.status.isInvalid) {
+        unsubscribe();
+        reject(new Error('MapAccount transaction is invalid'));
       }
     });
   });
-});
-await transferPromise;
+}
 
-const executeExtrinsic = api.tx.qfPolkaVM.execute(contractAddress, to, value, userData, gasLimit, gasPrice);
-console.log(`Extrinsic created: ${executeExtrinsic.method.section}.${executeExtrinsic.method.method}`);
+async function executeCall() {
+  const callTx = api.tx.revive.call(
+    args.dest,
+    args.value.toString(),
+    {
+      refTime: args.gasLimit.refTime.toString(),
+      proofSize: args.gasLimit.proofSize.toString()
+    },
+    args.storageDepositLimit.toString(),
+    args.data
+  );
 
-const executionDataPromise = new Promise(async (resolve) => {
-  const unsubscribeExecuteExtrinsic = await executeExtrinsic.signAndSend(ALICE, ({ events = [], status }) => {
-    events.forEach(({ phase, event: { data, method, section } }) => {
-      if (section === 'qfPolkaVM' && method === 'ExecutionResult') {
-        unsubscribeExecuteExtrinsic();
-        resolve(data);
+  return new Promise((resolve, reject) => {
+    const unsubscribe = callTx.signAndSend(SENDER, (result) => {
+      if (result.status.isFinalized) {
+        const blockHash = result.status.asFinalized;
+        console.log(`Smart contract call finalized in block: ${blockHash}`);
+        console.log(`View execution results at: https://portal.qfnetwork.xyz/#/explorer/query/${blockHash}`);
+        unsubscribe();
+        resolve(blockHash);
+      } else if (result.status.isInvalid) {
+        unsubscribe();
+        reject(new Error('Smart contract call transaction is invalid'));
       }
     });
   });
-});
-console.log('Transaction sent. Waiting for processing...');
-const executionData = await executionDataPromise;
-
-const [_who, _contractAddress, version, result, notEnoughGas, trap, gasBefore, gasAfter] = executionData;
-console.log('Program executed successfully!');
-
-console.log(JSON.stringify({
-  version: api.createType('u64', version).toHuman(),
-  result: api.createType('Option<u64>', result).toHuman(),
-  notEnoughGas,
-  trap,
-  gasBefore: api.createType('u32', gasBefore).toHuman(),
-  gasAfter: api.createType('i64', gasAfter).toHuman(),
-}, null, 2));
-
-// Second call
-(async () => {
-  const executeExtrinsic = api.tx.qfPolkaVM.execute(contractAddress, to, value, userData, gasLimit, gasPrice);
-  console.log(`Extrinsic created: ${executeExtrinsic.method.section}.${executeExtrinsic.method.method}`);
-
-  const executionDataPromise = new Promise(async (resolve) => {
-    const unsubscribeExecuteExtrinsic = await executeExtrinsic.signAndSend(ALICE, ({ events = [], status }) => {
-      events.forEach(({ phase, event: { data, method, section } }) => {
-        if (section === 'qfPolkaVM' && method === 'ExecutionResult') {
-          unsubscribeExecuteExtrinsic();
-          resolve(data);
-        }
-      });
-    });
-  });
-  console.log('Transaction sent. Waiting for processing...');
-  const executionData = await executionDataPromise;
-
-  const [_who, _contractAddress, version, result, notEnoughGas, trap, gasBefore, gasAfter] = executionData;
-  console.log('Program executed successfully!');
-
-  console.log(JSON.stringify({
-    version: api.createType('u64', version).toHuman(),
-    result: api.createType('Option<u64>', result).toHuman(),
-    notEnoughGas,
-    trap,
-    gasBefore: api.createType('u32', gasBefore).toHuman(),
-    gasAfter: api.createType('i64', gasAfter).toHuman(),
-  }, null, 2));
-
-})()
+}
