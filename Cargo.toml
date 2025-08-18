@@ -10,6 +10,5 @@ codec = { version = "3.7.4", package = "parity-scale-codec", features = ["derive
 polkavm-derive = { git = "https://github.com/paritytech/polkavm.git", tag = "v0.21.0" }
 
 pallet-revive-uapi = { tag = "polkadot-stable2503-6", git = "https://github.com/paritytech/polkadot-sdk.git", default-features = false }
-sp-core = { version = "36.1.0", default-features = false, features = ["serde"] }
 
 qf-polkavm-sdk = { path = "qf-polkavm-sdk" }
