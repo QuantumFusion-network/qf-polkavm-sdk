@@ -1,114 +1,84 @@
 /*
- * Script for calling a smart contract. You could paste that it to https://portal.qfnetwork.xyz/#/js.
+ * Smart contract call script for QuantumFusion network.
+ * Paste this into https://portal.qfnetwork.xyz/#/js.
  */
 
-// 1. Configure smart contract call.
+// Configuration
+const SENDER = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY';
+const CONTRACT_ADDRESS = '0x2c6fc00458f198f46ef072e1516b83cd56db7cf5';
+const CALL_DATA = '0xffffff00';
 
-// Chain configuration.
-const DECIMALS = Math.pow(10, 18);
-const WEIGHT = Math.pow(10, 9)
+const DECIMALS = 10n ** 18n;
+const WEIGHT = 10n ** 9n;
 
-// Call origin. Make sure you have this account connected from the wallet.
-const SENDER = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY'; // Alice
+// Main execution
+console.log('Setting up account mapping...');
+await ensureAccountMapped();
 
-// Call arguments.
-const args = {
-  dest: '0x2c6fc00458f198f46ef072e1516b83cd56db7cf5', // smart contract address
-  value: 1 * DECIMALS, // amount to send with the call
-  gasLimit: {
-    refTime: 1 * WEIGHT, // gas limit ref time
-    proofSize: 1 * WEIGHT, // gas limit proof size
-  },
-  storageDepositLimit: 1 * DECIMALS, // storage deposit limit
-  data: '0xffffff00', // SCALE-encoded smart contract function arguments
-};
+console.log('Executing smart contract call...');
+const blockHash = await callContract();
 
-// 2. Main execution flow.
-console.log('Checking if account is mapped...');
-const mappedAddress = await findMappedAccount();
+console.log(`Contract call completed in block: ${blockHash}`);
+console.log(`View results: https://portal.qfnetwork.xyz/#/explorer/query/${blockHash}`);
 
-if (mappedAddress) {
-  console.log(`Account already mapped. Ethereum address: ${mappedAddress}`);
-} else {
-  console.log('Account not found in mapping entries');
+// Helper functions
+async function ensureAccountMapped() {
+  const mappedAddress = await findMappedAccount();
+
+  if (mappedAddress) {
+    console.log(`Account already mapped to: ${mappedAddress}`);
+    return;
+  }
+
+  console.log('Mapping account...');
   await mapAccount();
 
-  const newMappedAddress = await findMappedAccount();
-  if (newMappedAddress) {
-    console.log(`Account mapped successfully. Ethereum address: ${newMappedAddress}`);
+  const newAddress = await findMappedAccount();
+  if (newAddress) {
+    console.log(`Account mapped to: ${newAddress}`);
   } else {
-    console.log('Account mapping may have failed - account not found in entries');
+    throw new Error('Account mapping failed');
   }
 }
 
-// Execute the smart contract call.
-const blockHash = await executeCall();
-console.log('Contract execution completed successfully');
-console.log(`blockHash: ${blockHash}`)
-
-/*
- * Helpers.
- */
-
-function buf2hex(buffer) { // buffer is an ArrayBuffer
-  return [...new Uint8Array(buffer)]
-    .map(x => x.toString(16).padStart(2, '0'))
-    .join('');
-}
-
 async function findMappedAccount() {
-  const allOriginalAccounts = await api.query.revive.originalAccount.entries();
+  const entries = await api.query.revive.originalAccount.entries();
 
-  for (const [key, value] of allOriginalAccounts) {
-    const substrateAccount = value.toString();
-    if (substrateAccount === SENDER) {
-      const ethereumAddressBytes = key.args[0];
-      const ethereumAddress = `0x${buf2hex(ethereumAddressBytes.toU8a())}`;
-      return ethereumAddress;
+  for (const [key, value] of entries) {
+    if (value.toString() === SENDER) {
+      const addressBytes = key.args[0].toU8a();
+      return `0x${Buffer.from(addressBytes).toString('hex')}`;
     }
   }
   return null;
 }
 
 async function mapAccount() {
-  const mapAccountTx = api.tx.revive.mapAccount();
-
-  return new Promise((resolve, reject) => {
-    const unsubscribe = mapAccountTx.signAndSend(SENDER, (result) => {
-      if (result.status.isFinalized) {
-        unsubscribe();
-        resolve();
-      } else if (result.status.isInvalid) {
-        unsubscribe();
-        reject(new Error('MapAccount transaction is invalid'));
-      }
-    });
-  });
+  const tx = api.tx.revive.mapAccount();
+  return signAndWait(tx);
 }
 
-async function executeCall() {
-  const callTx = api.tx.revive.call(
-    args.dest,
-    args.value.toString(),
+async function callContract() {
+  const tx = api.tx.revive.call(
+    CONTRACT_ADDRESS,
+    DECIMALS.toString(),
     {
-      refTime: args.gasLimit.refTime.toString(),
-      proofSize: args.gasLimit.proofSize.toString()
+      refTime: WEIGHT.toString(),
+      proofSize: WEIGHT.toString()
     },
-    args.storageDepositLimit.toString(),
-    args.data
+    DECIMALS.toString(),
+    CALL_DATA
   );
+  return signAndWait(tx);
+}
 
+async function signAndWait(tx) {
   return new Promise((resolve, reject) => {
-    const unsubscribe = callTx.signAndSend(SENDER, (result) => {
+    tx.signAndSend(SENDER, (result) => {
       if (result.status.isFinalized) {
-        const blockHash = result.status.asFinalized;
-        console.log(`Smart contract call finalized in block: ${blockHash}`);
-        console.log(`View execution results at: https://portal.qfnetwork.xyz/#/explorer/query/${blockHash}`);
-        unsubscribe();
-        resolve(blockHash);
+        resolve(result.status.asFinalized);
       } else if (result.status.isInvalid) {
-        unsubscribe();
-        reject(new Error('Smart contract call transaction is invalid'));
+        reject(new Error('Transaction is invalid'));
       }
     });
   });
