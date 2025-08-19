@@ -8,11 +8,11 @@
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/QuantumFusion-network/qf-polkavm-sdk)
 ![GitHub last commit](https://img.shields.io/github/last-commit/QuantumFusion-network/qf-polkavm-sdk)
 <br>
-[![Twitter URL](https://img.shields.io/twitter/follow/QuantumFusion_?style=social)](https://x.com/QuantumFusion_)
+[![Twitter URL](https://img.shields.io/twitter/follow/theqfnetwork?style=social)](https://x.com/theqfnetwork)
 
 </div>
 
-This framework enables the development of smart contracts for the Quantum Fusion Network. For the smart contract platform implementation details, please refer to the [PolkaVM pallet documentation](https://github.com/QuantumFusion-network/spec/blob/main/docs/PolkaVM/polkavm_pallet.md).
+This framework enables the development of smart contracts for the QF Network. For the smart contract platform implementation details, please refer to the [PolkaVM pallet documentation](https://github.com/QuantumFusion-network/spec/blob/main/docs/PolkaVM/polkavm_pallet.md).
 
 For contributing to this project, please read [Contributing](#contributing) section.
 
