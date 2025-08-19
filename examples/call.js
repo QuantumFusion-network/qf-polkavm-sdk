@@ -4,9 +4,9 @@
  */
 
 // Configuration
-const SENDER = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY';
-const CONTRACT_ADDRESS = '0x2c6fc00458f198f46ef072e1516b83cd56db7cf5';
-const CALL_DATA = '0xffffff00';
+const SENDER = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY'; // an account connected from the wallet for signing the transaction
+const CONTRACT_ADDRESS = '0x0000000000000000000000000000000000000000'; // get it at https://portal.qfnetwork.xyz/#/chainstate calling `revive` pallet `contractInfoOf` getter
+const CALL_DATA = '0xffffff00'; // SCALE encoded unsigned 32-bit integer 16777215, see https://docs.polkadot.com/polkadot-protocol/parachain-basics/data-encoding/#data-types
 
 const DECIMALS = 10n ** 18n;
 const WEIGHT = 10n ** 9n;
