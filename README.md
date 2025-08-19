@@ -65,6 +65,16 @@ cd cli
 npx ts-node upload_and_execute.ts ws://127.0.0.1:9944 ../output/increment-counter.polkavm
 ```
 
+## Debugging
+
+Run the node with `pallet-revive` logs and historical state.
+
+```console
+qf-node --dev -lerror,runtime::revive::strace=trace,runtime::revive=debug --state-pruning archive
+```
+
+See also <https://github.com/paritytech/polkadot-sdk/blob/598fedd/substrate/frame/revive/README.md#L52-L53>.
+
 ## Contributing
 
 We welcome contributions of all kinds! Whether you're reporting or fixing a bug, adding a feature, or improving
