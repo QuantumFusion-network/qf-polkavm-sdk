@@ -73,7 +73,7 @@ Run the node with `pallet-revive` logs and historical state.
 qf-node --dev -lerror,runtime::revive::strace=trace,runtime::revive=debug --state-pruning archive
 ```
 
-See also <https://github.com/paritytech/polkadot-sdk/blob/598fedd/substrate/frame/revive/README.md#L52-L53>.
+See also <https://github.com/paritytech/polkadot-sdk/blob/598feddb/substrate/frame/revive/README.md#host-function-tracing>.
 
 ## Contributing
 
