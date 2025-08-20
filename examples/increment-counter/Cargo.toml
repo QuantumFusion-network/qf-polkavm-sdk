@@ -5,6 +5,8 @@ edition = "2021"
 publish = false
 
 [dependencies]
-parity-scale-codec = { workspace = true }
+codec = { workspace = true }
+
 polkavm-derive = { workspace = true }
-qf-polkavm-sdk = { workspace = true }
+pallet-revive-uapi = { workspace = true }
+qf-polkavm-sdk = { workspace = true, features = ["global-allocator", "panic-handler"] }

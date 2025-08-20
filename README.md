@@ -41,13 +41,13 @@ The QF Network executes smart contracts in the PolkaVM virtual machine and requi
     RUSTFLAGS="--remap-path-prefix=$(pwd)= --remap-path-prefix=${HOME}=~" \
         cargo +nightly build \
             -Z build-std=core,alloc \
-            --target $(polkatool get-target-json-path --bitness 32) \
+            --target $(polkatool get-target-json-path) \
             -q --release --bin "${CRATE_NAME}" -p "${CRATE_NAME}"
     popd
 
     polkatool link \
         --run-only-if-newer \
-        -s "examples/${CRATE_NAME}/target/riscv32emac-unknown-none-polkavm/release/${CRATE_NAME}" \
+        -s "examples/${CRATE_NAME}/target/riscv64emac-unknown-none-polkavm/release/${CRATE_NAME}" \
         -o "output/${CRATE_NAME}.polkavm"
     ```
 
@@ -64,6 +64,16 @@ To run tests on a [local network](https://github.com/QuantumFusion-network/qf-so
 cd cli
 npx ts-node upload_and_execute.ts ws://127.0.0.1:9944 ../output/increment-counter.polkavm
 ```
+
+## Debugging
+
+Run the node with `pallet-revive` logs and historical state.
+
+```console
+qf-node --dev -lerror,runtime::revive::strace=trace,runtime::revive=debug --state-pruning archive
+```
+
+See also <https://github.com/paritytech/polkadot-sdk/blob/598feddb/substrate/frame/revive/README.md#host-function-tracing>.
 
 ## Contributing
 

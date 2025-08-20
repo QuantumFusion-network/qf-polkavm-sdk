@@ -9,6 +9,6 @@ RUSTFLAGS="--remap-path-prefix=$(pwd)= --remap-path-prefix=${HOME}=~" \
         --workspace \
         --no-deps \
         -Z build-std=core,alloc \
-        --target $(polkatool get-target-json-path --bitness 32)
+        --target $(polkatool get-target-json-path)
 
 echo "Documentation build complete!"

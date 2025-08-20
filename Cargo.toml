@@ -2,23 +2,13 @@
 resolver = "2"
 members = [
     "qf-polkavm-sdk",
-    "examples/get-account-balance",
-    "examples/get-block-number",
-    "examples/get-contract-account",
-    "examples/get-contract-balance",
-    "examples/get-transaction-caller",
-    "examples/hello-qf-polkavm",
     "examples/increment-counter",
-    "examples/print-message",
-    "examples/transfer-balance",
-    "examples/chess-game",
 ]
 
 [workspace.dependencies]
-qf-polkavm-sdk = { path = "qf-polkavm-sdk" }
-parity-scale-codec = { version = "3.7.4", default-features = false, features = [
-    "derive",
-] }
+codec = { version = "3.7.4", package = "parity-scale-codec", features = ["derive"], default-features = false }
 polkavm-derive = { git = "https://github.com/paritytech/polkavm.git", tag = "v0.21.0" }
-sp-core = { version = "36.1.0", default-features = false, features = ["serde"] }
-codec = { version = "3.6.12", default-features = false, package = "parity-scale-codec" }
+
+pallet-revive-uapi = { tag = "polkadot-stable2503-6", git = "https://github.com/paritytech/polkadot-sdk.git", default-features = false }
+
+qf-polkavm-sdk = { path = "qf-polkavm-sdk" }

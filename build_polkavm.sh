@@ -37,7 +37,7 @@ done
 RUSTFLAGS="--remap-path-prefix=$(pwd)= --remap-path-prefix=${HOME}=~" \
     cargo +nightly build \
         -Z build-std=core,alloc \
-        --target $(polkatool get-target-json-path --bitness 32) \
+        --target $(polkatool get-target-json-path) \
         --release \
         ${PACKAGE_FLAGS}
 
@@ -46,7 +46,7 @@ for crate in "${EXAMPLE_CRATES[@]}"; do
     echo "Linking ${crate}..."
     polkatool link \
         --strip --run-only-if-newer \
-        "target/riscv32emac-unknown-none-polkavm/release/${crate}" \
+        "target/riscv64emac-unknown-none-polkavm/release/${crate}" \
         -o "output/${crate}.polkavm"
 done
 
