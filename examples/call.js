@@ -1,5 +1,5 @@
 /*
- * Smart contract call script for QuantumFusion network.
+ * Smart contract call script for QF Network.
  * Paste this into https://portal.qfnetwork.xyz/#/js.
  */
 
