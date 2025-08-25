@@ -33,7 +33,13 @@ pub extern "C" fn call() {
     input!(increment: u32, );
 
     // Read the current value from storage.
-    unwrap_output!(raw_data, [0u8; 4], api::get_storage, StorageFlags::empty(), &KEY);
+    unwrap_output!(
+        raw_data,
+        [0u8; 4],
+        api::get_storage,
+        StorageFlags::empty(),
+        &KEY
+    );
     let old = u32::decode(&mut &raw_data[..]).unwrap();
 
     // Increment the value and write it back to storage.
@@ -41,5 +47,8 @@ pub extern "C" fn call() {
     api::set_storage(StorageFlags::empty(), &KEY, &new.encode());
 
     // Emit the update event with the old and new values.
-    api::deposit_event(&[], format!("Counter incremented by {increment} from {old} to {new}.").as_bytes());
+    api::deposit_event(
+        &[],
+        format!("Counter incremented by {increment} from {old} to {new}.").as_bytes(),
+    );
 }
