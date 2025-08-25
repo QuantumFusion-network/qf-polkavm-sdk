@@ -22,6 +22,8 @@ const KEY: [u8; 32] = [1u8; 32];
 pub extern "C" fn deploy() {
     // Initialize storage counter with 0.
     api::set_storage(StorageFlags::empty(), &KEY, &0u32.encode());
+
+    api::deposit_event(&[], format!("Contract deployed").as_bytes());
 }
 
 #[no_mangle]
