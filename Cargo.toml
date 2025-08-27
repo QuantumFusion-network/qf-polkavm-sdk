@@ -2,6 +2,7 @@
 resolver = "2"
 members = [
     "qf-polkavm-sdk",
+    "qf-polkavm-sdk/procedural",
     "examples/increment-counter",
 ]
 
@@ -12,3 +13,4 @@ polkavm-derive = { git = "https://github.com/paritytech/polkavm.git", tag = "v0.
 pallet-revive-uapi = { tag = "polkadot-stable2503-6", git = "https://github.com/paritytech/polkadot-sdk.git", default-features = false }
 
 qf-polkavm-sdk = { path = "qf-polkavm-sdk" }
+qf-polkavm-sdk-procedural = { path = "qf-polkavm-sdk/procedural" }
