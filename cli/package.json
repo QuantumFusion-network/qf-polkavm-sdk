@@ -11,9 +11,12 @@
   "description": "",
   "dependencies": {
     "@polkadot/api": "^16.0.1",
-    "@polkadot/keyring": "^13.5.1"
+    "@polkadot/keyring": "^13.5.1",
+    "ethereumjs-util": "^7.1.5",
+    "keccak": "^3.0.4"
   },
   "devDependencies": {
+    "@types/keccak": "^3.0.5",
     "concurrently": "^9.1.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
