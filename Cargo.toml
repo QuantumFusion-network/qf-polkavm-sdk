@@ -9,6 +9,9 @@ members = [
 [workspace.dependencies]
 codec = { version = "3.7.4", package = "parity-scale-codec", features = ["derive"], default-features = false }
 polkavm-derive = { git = "https://github.com/paritytech/polkavm.git", tag = "v0.21.0" }
+proc-macro2 = "1.0"
+quote = "1.0"
+syn = { version = "2.0" }
 
 pallet-revive-uapi = { tag = "polkadot-stable2503-6", git = "https://github.com/paritytech/polkadot-sdk.git", default-features = false }
 
