@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+qf-polkavm-sdk-procedural = { workspace = true }
 
 [features]
 global-allocator = []

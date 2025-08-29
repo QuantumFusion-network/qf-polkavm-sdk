@@ -12,26 +12,29 @@ use alloc::format;
 use codec::{Decode, Encode};
 use pallet_revive_uapi::{input, unwrap_output, HostFn, HostFnImpl as api, StorageFlags};
 
-#[allow(unused_imports)]
-use qf_polkavm_sdk;
+use qf_polkavm_sdk::prelude::*;
 
 const KEY: [u8; 32] = [1u8; 32];
 
-#[no_mangle]
-#[polkavm_derive::polkavm_export]
-pub extern "C" fn deploy() {
+#[export]
+pub fn deploy() {
     // Initialize storage counter with 0.
     api::set_storage(StorageFlags::empty(), &KEY, &0u32.encode());
 }
 
-#[no_mangle]
-#[polkavm_derive::polkavm_export]
-pub extern "C" fn call() {
+#[export]
+pub fn call() {
     // Accept increment value from user input. Should be 4 bytes (e.g., `0x12345678`) or `ContractTrapped` error occurs.
     input!(increment: u32, );
 
     // Read the current value from storage.
-    unwrap_output!(raw_data, [0u8; 4], api::get_storage, StorageFlags::empty(), &KEY);
+    unwrap_output!(
+        raw_data,
+        [0u8; 4],
+        api::get_storage,
+        StorageFlags::empty(),
+        &KEY
+    );
     let old = u32::decode(&mut &raw_data[..]).unwrap();
 
     // Increment the value and write it back to storage.
@@ -39,5 +42,8 @@ pub extern "C" fn call() {
     api::set_storage(StorageFlags::empty(), &KEY, &new.encode());
 
     // Emit the update event with the old and new values.
-    api::deposit_event(&[], format!("Counter incremented by {increment} from {old} to {new}.").as_bytes());
+    api::deposit_event(
+        &[],
+        format!("Counter incremented by {increment} from {old} to {new}.").as_bytes(),
+    );
 }
