@@ -1,13 +1,15 @@
 [workspace]
 resolver = "2"
 members = [
-    "qf-polkavm-sdk",
-    "qf-polkavm-sdk/procedural",
-    "examples/increment-counter",
+  "qf-polkavm-sdk",
+  "qf-polkavm-sdk/procedural",
+  "examples/increment-counter",
 ]
 
 [workspace.dependencies]
-codec = { version = "3.7.4", package = "parity-scale-codec", features = ["derive"], default-features = false }
+codec = { version = "3.7.4", package = "parity-scale-codec", features = [
+  "derive",
+], default-features = false }
 polkavm-derive = { git = "https://github.com/paritytech/polkavm.git", tag = "v0.21.0" }
 proc-macro2 = { version = "1.0.86" }
 quote = { version = "1.0.37" }
