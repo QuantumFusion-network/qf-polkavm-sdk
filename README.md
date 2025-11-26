@@ -16,6 +16,18 @@ This framework enables the development of smart contracts for the QF Network. Fo
 
 For contributing to this project, please read [Contributing](#contributing) section.
 
+## Features
+
+Existing and planed features.
+
+- [x] Simplified smart contract project compilation
+- [x] Essentials: allocator, panic handler
+- [x] `export` macro which simplifies `call` and `deploy` definitions
+- [ ] Improved storage layer API (typed / structs-based, instead of key-value API of the `pallet-revive-uapi`)
+- [ ] JavaScript / TypeScript client library generation
+- [ ] Examples
+- [ ] Deployment and testing tools
+
 ## Compiling example Smart Contract
 
 The QF Network executes smart contracts in the PolkaVM virtual machine and requires PolkaVM tools for smart contracts compilation.
