@@ -12,9 +12,9 @@
 
 </div>
 
-This framework enables the development of smart contracts for the QF Network. For the smart contract platform implementation details, please refer to the [PolkaVM pallet documentation](https://github.com/QuantumFusion-network/spec/blob/main/docs/PolkaVM/polkavm_pallet.md).
+The SDK simplifies the development of native Rust smart contracts on QF Network. Smart contract functionality in QF Network is implemented using [pallet-revive](https://paritytech.github.io/polkadot-sdk/master/pallet_revive/index.html) from Polkadot SDK / Substrate. See [pallet-revive-uapi](https://paritytech.github.io/polkadot-sdk/master/pallet_revive_uapi/index.html) for reference documentation on the API available to smart contract developers.
 
-For contributing to this project, please read [Contributing](#contributing) section.
+To contribute to this project, please read the [Contributing](#contributing) section.
 
 ## Features
 
