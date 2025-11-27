@@ -56,12 +56,6 @@ To compile a smart contract we need to install a correct version of `polkatool` 
 ./build_polkavm.sh increment-counter
 ```
 
-To run tests on a [local network](https://github.com/QuantumFusion-network/qf-solochain/blob/main/zombienet/README.md) run:
-```bash
-cd cli
-npx ts-node upload_and_execute.ts ws://127.0.0.1:9944 ../output/increment-counter.polkavm
-```
-
 ## Debugging
 
 Run the node with `pallet-revive` logs and historical state.
