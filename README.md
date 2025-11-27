@@ -56,8 +56,6 @@ To compile a smart contract we need to install a correct version of `polkatool` 
 ./build_polkavm.sh increment-counter
 ```
 
-See [guides.md](guides.md) for explaination on how to deploy smart contract on a [QF Network Portal](https://portal.qfnetwork.xyz/).
-
 To run tests on a [local network](https://github.com/QuantumFusion-network/qf-solochain/blob/main/zombienet/README.md) run:
 ```bash
 cd cli
