@@ -28,39 +28,26 @@ Existing and planed features.
 - [ ] Examples
 - [ ] Deployment and testing tools
 
-## Compiling example Smart Contract
+## Compile example
 
-The QF Network executes smart contracts in the PolkaVM virtual machine and requires PolkaVM tools for smart contracts compilation.
+To compile a smart contract we need to install a correct version of `polkatool` (it should match chain's `pallet-revive` version) and run a script that configures environment and invokes it with correct arguments.
 
-1. Install `polkatool`.
+1. Install `polkatool`
 
     ```bash
     cargo install --git https://github.com/paritytech/polkavm.git --tag v0.21.0 polkatool
     ```
 
-1. Build smart-contract `examples/hello-qf-polkavm`.
+1. Build a smart contract from `examples/increment-counter`
 
     ```console
-    ./build_polkavm.sh hello-qf-polkavm
+    ./build_polkavm.sh increment-counter
     ```
 
-    Or compile manually:
-    ```bash
-    export CRATE_NAME=hello-qf-polkavm
-    mkdir -p output
+1. The `*.polkavm` binary for the deployment should be available at the following path
 
-    pushd "examples/${CRATE_NAME}"
-    RUSTFLAGS="--remap-path-prefix=$(pwd)= --remap-path-prefix=${HOME}=~" \
-        cargo +nightly build \
-            -Z build-std=core,alloc \
-            --target $(polkatool get-target-json-path) \
-            -q --release --bin "${CRATE_NAME}" -p "${CRATE_NAME}"
-    popd
-
-    polkatool link \
-        --run-only-if-newer \
-        -s "examples/${CRATE_NAME}/target/riscv64emac-unknown-none-polkavm/release/${CRATE_NAME}" \
-        -o "output/${CRATE_NAME}.polkavm"
+    ```console
+    output/increment-counter.polkavm
     ```
 
 ## Deploy and call a smart contract
