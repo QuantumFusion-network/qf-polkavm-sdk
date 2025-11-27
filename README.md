@@ -50,12 +50,6 @@ To compile a smart contract we need to install a correct version of `polkatool` 
     output/increment-counter.polkavm
     ```
 
-## Deploy and call a smart contract
-
-```bash
-./build_polkavm.sh increment-counter
-```
-
 ## Debugging
 
 Run the node with `pallet-revive` logs and historical state.
