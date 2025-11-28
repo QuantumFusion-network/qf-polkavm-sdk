@@ -3,6 +3,7 @@ name = "qf-polkavm-sdk"
 version = "0.1.0"
 edition = "2021"
 license.workspace = true
+description = "Native Rust smart contract SDK for QF Network. Can work with other Substrate-based blockchains using pallet-revive."
 
 [dependencies]
 qf-polkavm-sdk-procedural = { workspace = true }
