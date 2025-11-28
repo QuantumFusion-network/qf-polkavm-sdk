@@ -9,6 +9,7 @@ members = [
 [workspace.package]
 license-file = "LICENSE"
 repository = "https://github.com/QuantumFusion-network/qf-polkavm-sdk"
+readme = "README.md"
 
 [workspace.dependencies]
 codec = { version = "3.7.4", package = "parity-scale-codec", features = [
