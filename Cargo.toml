@@ -6,6 +6,9 @@ members = [
   "examples/increment-counter",
 ]
 
+[workspace.package]
+license-file = "LICENSE"
+
 [workspace.dependencies]
 codec = { version = "3.7.4", package = "parity-scale-codec", features = [
   "derive",

@@ -2,6 +2,7 @@
 name = "qf-polkavm-sdk"
 version = "0.1.0"
 edition = "2021"
+license.workspace = true
 
 [dependencies]
 qf-polkavm-sdk-procedural = { workspace = true }
