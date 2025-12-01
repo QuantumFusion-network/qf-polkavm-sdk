@@ -3,7 +3,7 @@ name = "qf-polkavm-sdk-procedural"
 version = "0.1.0"
 edition = "2021"
 description = "Proc macro of the SDK"
-license.workspace = true
+license-file.workspace = true
 repository.workspace = true
 
 [lib]
