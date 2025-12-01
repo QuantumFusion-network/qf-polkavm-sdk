@@ -6,6 +6,7 @@ license-file.workspace = true
 description = "Native Rust smart contract SDK for QF Network. Can work with other Substrate-based blockchains using pallet-revive."
 repository.workspace = true
 readme.workspace = true
+homepage.workspace = true
 
 [dependencies]
 qf-polkavm-sdk-procedural = { workspace = true }
