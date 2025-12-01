@@ -13,9 +13,7 @@ readme = "README.md"
 homepage = "https://qfnetwork.xyz"
 
 [workspace.dependencies]
-codec = { version = "3.7.4", package = "parity-scale-codec", features = [
-  "derive",
-], default-features = false }
+codec = { version = "3.7.4", package = "parity-scale-codec", features = ["derive"], default-features = false }
 polkavm-derive = { version = "0.21.0" }
 proc-macro2 = { version = "1.0.86" }
 quote = { version = "1.0.37" }
