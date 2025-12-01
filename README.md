@@ -12,58 +12,44 @@
 
 </div>
 
-This framework enables the development of smart contracts for the QF Network. For the smart contract platform implementation details, please refer to the [PolkaVM pallet documentation](https://github.com/QuantumFusion-network/spec/blob/main/docs/PolkaVM/polkavm_pallet.md).
+The SDK simplifies the development of native Rust smart contracts on QF Network. Smart contract functionality in QF Network is implemented using [pallet-revive](https://paritytech.github.io/polkadot-sdk/master/pallet_revive/index.html) from Polkadot SDK / Substrate. See [pallet-revive-uapi](https://paritytech.github.io/polkadot-sdk/master/pallet_revive_uapi/index.html) for reference documentation on the API available to smart contract developers.
 
-For contributing to this project, please read [Contributing](#contributing) section.
+To contribute to this project, please read the [Contributing](#contributing) section.
 
-## Compiling example Smart Contract
+## Features
 
-The QF Network executes smart contracts in the PolkaVM virtual machine and requires PolkaVM tools for smart contracts compilation.
+Existing and planed features.
 
-1. Install `polkatool`.
+- [x] Simplified smart contract project compilation
+- [x] Essentials: allocator, panic handler
+- [x] `export` macro which simplifies `call` and `deploy` definitions
+- [ ] Improved storage layer API (typed / structs-based, instead of key-value API of the `pallet-revive-uapi`)
+- [ ] JavaScript / TypeScript client library generation
+- [ ] Contract address prediction, see <https://github.com/QuantumFusion-network/qf-polkavm-sdk/pull/26>.
+- [ ] Examples
+- [ ] Deployment and testing tools
+
+## Compile example
+
+To compile a smart contract we need to install a correct version of `polkatool` (it should match chain's `pallet-revive` version) and run a script that configures environment and invokes it with correct arguments.
+
+1. Install `polkatool`
 
     ```bash
     cargo install --git https://github.com/paritytech/polkavm.git --tag v0.21.0 polkatool
     ```
 
-1. Build smart-contract `examples/hello-qf-polkavm`.
+1. Build a smart contract from `examples/increment-counter`
 
     ```console
-    ./build_polkavm.sh hello-qf-polkavm
+    ./build_polkavm.sh increment-counter
     ```
 
-    Or compile manually:
-    ```bash
-    export CRATE_NAME=hello-qf-polkavm
-    mkdir -p output
+1. The `*.polkavm` binary for the deployment should be available at the following path
 
-    pushd "examples/${CRATE_NAME}"
-    RUSTFLAGS="--remap-path-prefix=$(pwd)= --remap-path-prefix=${HOME}=~" \
-        cargo +nightly build \
-            -Z build-std=core,alloc \
-            --target $(polkatool get-target-json-path) \
-            -q --release --bin "${CRATE_NAME}" -p "${CRATE_NAME}"
-    popd
-
-    polkatool link \
-        --run-only-if-newer \
-        -s "examples/${CRATE_NAME}/target/riscv64emac-unknown-none-polkavm/release/${CRATE_NAME}" \
-        -o "output/${CRATE_NAME}.polkavm"
+    ```console
+    output/increment-counter.polkavm
     ```
-
-## Deploy and call a smart contract
-
-```bash
-./build_polkavm.sh increment-counter
-```
-
-See [guides.md](guides.md) for explaination on how to deploy smart contract on a [QF Network Portal](https://portal.qfnetwork.xyz/).
-
-To run tests on a [local network](https://github.com/QuantumFusion-network/qf-solochain/blob/main/zombienet/README.md) run:
-```bash
-cd cli
-npx ts-node upload_and_execute.ts ws://127.0.0.1:9944 ../output/increment-counter.polkavm
-```
 
 ## Debugging
 

@@ -1,10 +1,7 @@
-.PHONY: open-rustdoc rustdoc doc-all
+.PHONY: open-rustdoc doc-all
 
 open-rustdoc: doc-all
-	cargo doc --open
-
-rustdoc:
-	rustdoc src/lib.rs -o target/doc
+	cargo doc -p qf-polkavm-sdk --open
 
 doc-all:
 	./build_docs.sh
