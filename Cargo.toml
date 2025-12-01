@@ -24,4 +24,4 @@ syn = { version = "2.0.87" }
 pallet-revive-uapi = { version = "0.4.0", default-features = false }
 
 qf-polkavm-sdk = { path = "qf-polkavm-sdk" }
-qf-polkavm-sdk-procedural = { path = "qf-polkavm-sdk/procedural" }
+qf-polkavm-sdk-procedural = { version = "0.1.0", path = "qf-polkavm-sdk/procedural" }
