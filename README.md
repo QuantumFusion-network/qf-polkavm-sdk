@@ -25,6 +25,7 @@ Existing and planed features.
 - [x] `export` macro which simplifies `call` and `deploy` definitions
 - [ ] Improved storage layer API (typed / structs-based, instead of key-value API of the `pallet-revive-uapi`)
 - [ ] JavaScript / TypeScript client library generation
+- [ ] Contract address prediction, see <https://github.com/QuantumFusion-network/qf-polkavm-sdk/pull/26>.
 - [ ] Examples
 - [ ] Deployment and testing tools
 
