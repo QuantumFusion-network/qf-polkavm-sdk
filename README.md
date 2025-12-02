@@ -20,6 +20,10 @@ The SDK simplifies the development of native Rust smart contracts on QF Network.
 
 To contribute to this project, please read the [Contributing](#contributing) section.
 
+## Getting started
+
+To create your first project using this SDK, see [examples/increment-counter/README.md](examples/increment-counter/README.md).
+
 ## Features
 
 Existing and planed features.
