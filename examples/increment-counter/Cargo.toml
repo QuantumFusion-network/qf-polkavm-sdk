@@ -3,8 +3,7 @@ name = "increment-counter"
 version = "0.2.1"
 edition = "2021"
 publish = false
-license.workspace = true
-license-file.workspace = true
+license = "MIT"
 
 [dependencies]
 codec = { workspace = true }
