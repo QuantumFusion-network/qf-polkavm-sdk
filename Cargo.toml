@@ -7,6 +7,7 @@ members = [
 ]
 
 [workspace.package]
+license = "MIT"
 license-file = "LICENSE"
 repository = "https://github.com/QuantumFusion-network/qf-polkavm-sdk"
 readme = "README.md"
