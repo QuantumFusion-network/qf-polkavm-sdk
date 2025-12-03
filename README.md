@@ -2,11 +2,15 @@
 
 # QF Network PolkaVM SDK
 
-[![License](https://img.shields.io/github/license/QuantumFusion-network/qf-solochain?color=green)](https://github.com/QuantumFusion-network/qf-polkavm-sdk/blob/main/LICENSE)
+[![GitHub](https://img.shields.io/badge/github-repo-blue?logo=github)](https://github.com/QuantumFusion-network/qf-polkavm-sdk)
+[![crates.io](https://img.shields.io/crates/v/qf-polkavm-sdk.svg?logo=rust)](https://crates.io/crates/qf-polkavm-sdk)
+[![docs.rs](https://img.shields.io/badge/docs.rs-qf_polkavm_sdk?logo=docs.rs)](https://crates.io/crates/qf-polkavm-sdk)
 <br>
 ![GitHub contributors](https://img.shields.io/github/contributors/QuantumFusion-network/qf-polkavm-sdk)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/QuantumFusion-network/qf-polkavm-sdk)
 ![GitHub last commit](https://img.shields.io/github/last-commit/QuantumFusion-network/qf-polkavm-sdk)
+<br>
+[![License](https://img.shields.io/github/license/QuantumFusion-network/qf-solochain?color=green)](https://github.com/QuantumFusion-network/qf-polkavm-sdk/blob/main/LICENSE)
 <br>
 [![Twitter URL](https://img.shields.io/twitter/follow/theqfnetwork?style=social)](https://x.com/theqfnetwork)
 
