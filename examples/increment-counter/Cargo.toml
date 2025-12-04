@@ -3,15 +3,10 @@ name = "increment-counter"
 version = "0.2.1"
 edition = "2021"
 publish = false
-license.workspace = true
-license-file.workspace = true
+license = "MIT"
 
 [dependencies]
-codec = { workspace = true }
-
-polkavm-derive = { workspace = true }
-pallet-revive-uapi = { workspace = true }
-qf-polkavm-sdk = { workspace = true, features = [
-  "global-allocator",
-  "panic-handler",
-] }
+codec = { version = "3.7.4", package = "parity-scale-codec", features = ["derive"], default-features = false }
+pallet-revive-uapi = { version = "0.4.0", default-features = false }
+polkavm-derive = { version = "0.21.0" }
+qf-polkavm-sdk = { version = "0.2.0", features = ["global-allocator", "panic-handler"] }
